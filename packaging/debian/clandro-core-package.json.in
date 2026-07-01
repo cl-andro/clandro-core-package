@@ -1,0 +1,20 @@
+{
+    "control": {
+        "Package": "clandro-core",
+        "Version": "@CLANDRO_CORE_PKG__VERSION@",
+        "Architecture": "@CLANDRO_CORE_PKG__ARCH@",
+        "Maintainer": "@clandro",
+        "Homepage": "https://github.com/cl-andro/clandro-core-package",
+        "Description": "Utils and libraries for Clandro core"
+    },
+
+    "installation_prefix": "@CLANDRO__PREFIX@",
+    "control_files_dir": "build/output/packaging/debian",
+
+    "data_files": {
+        "": {
+            "source": "build/output/usr",
+            "source_recurse": true
+        }
+    }
+}

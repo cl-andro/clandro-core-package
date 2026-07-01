@@ -1,0 +1,788 @@
+#!@CLANDRO__PREFIX@/bin/bash
+# shellcheck shell=bash
+
+##
+# `clandro_core__clandro_apps_info_app_version_name__run_tests`
+##
+clandro_core__clandro_apps_info_app_version_name__run_tests() {
+
+    clandro_core__tests__log 3 "clandro_core__clandro_apps_info_app_version_name__run_tests()"
+
+    clandro_core__sh__clandro_apps_info_app_version_name__run_tests || return $?
+    clandro_core__bash__clandro_apps_info_app_version_name__run_tests || return $?
+
+    return 0
+}
+
+
+
+
+
+clandro_core__sh__clandro_apps_info_app_version_name__run_tests() {
+
+    clandro_core__tests__log 3 "clandro_core__sh__clandro_apps_info_app_version_name()"
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME="clandro_core__sh__clandro_apps_info_app_version_name__run_test"
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__default || return $?
+    clandro_core__sh__clandro_apps_info_app_version_name__run_tests_for_scope || return $?
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__foo || return $?
+    clandro_core__sh__clandro_apps_info_app_version_name__run_tests_for_scope || return $?
+
+    return 0
+
+}
+
+clandro_core__sh__clandro_apps_info_app_version_name__run_tests_for_scope() {
+
+    CLANDRO_ENV__S_ROOT="$CLANDRO_CORE__TESTS__CLANDRO_ENV__S_ROOT"
+
+
+    clandro_core__clandro_apps_info_app_version_name__test__usage "usage" \
+        "APP__" "STRING" || return $?
+
+
+
+    # `CLANDRO_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-app_app-version-name" \
+        "APP__" "clandro-app" "--posix-validator=\"p+=''|clandro-[0-9]*\"" || return $?
+
+
+
+    # `CLANDRO_API_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-api-app_app-version-name" \
+        "API_APP__" "clandro-api-app" "--posix-validator=\"p+=''|clandro-[0-9]*\"" || return $?
+
+
+
+    # `CLANDRO_FLOAT_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-float-app_app-version-name" \
+        "FLOAT_APP__" "clandro-float-app" "--posix-validator=\"p+=''|clandro-[0-9]*\"" || return $?
+
+
+
+    # `CLANDRO_GUI_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-gui-app_app-version-name" \
+        "GUI_APP__" "clandro-gui-app" "--posix-validator=\"p+=''|clandro-[0-9]*\"" || return $?
+
+
+
+    # `CLANDRO_TASKER_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-tasker-app_app-version-name" \
+        "TASKER_APP__" "clandro-tasker-app" "--posix-validator=\"p+=''|clandro-[0-9]*\"" || return $?
+
+
+
+    # `CLANDRO_WIDGET_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-widget-app_app-version-name" \
+        "WIDGET_APP__" "clandro-widget-app" "--posix-validator=\"p+=''|clandro-[0-9]*\"" || return $?
+
+
+
+    # `CLANDRO_X11_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-x11-app_app-version-name" \
+        "X11_APP__" "clandro-x11-app" "--posix-validator=\"p+=''|clandro-[0-9]*\"" || return $?
+
+    return 0
+
+}
+
+clandro_core__sh__clandro_apps_info_app_version_name__run_test() {
+
+    clandro_core__tests__validate_argument_count ge $# 7 clandro_core__sh__clandro_apps_info_app_version_name__run_test "$@" || return $?
+
+    local test_name="$1"
+    local pre_test_commands="$2"
+    local clandro_apps_info_env_file_export="$3"
+    local clandro_apps_info_env_file_content="$4"
+    local expected_exit_code="$5"
+    local expected_output_regex="$6"
+    local clandro_core__sh__taiavn_command_type="$7"
+
+    local clandro_apps_info_env_file_create_command
+    local clandro_apps_info_env_file_export_command
+    local clandro_apps_info_env_file_path
+    local clandro_core__sh__taiavn_call_command
+    local clandro_core__sh__taiavn_source_command
+    local clandro_core__sh__taiavn_source_output_mode_arg=""
+    local clandro_core__sh__taiavn_source_print_command=""
+
+    if [[ "$clandro_core__sh__taiavn_command_type" == "get-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 10 \
+            "'clandro_core__sh__clandro_apps_info_app_version_name__run_test' for the '$clandro_core__sh__taiavn_command_type' command" "$@" || return $?
+
+        local clandro_core__sh__taiavn_options="$8"
+        local clandro_core__sh__taiavn_source_output_mode="$9"
+        local clandro_core__sh__taiavn_args="${10}"
+
+        if [[ "$clandro_core__sh__taiavn_source_output_mode" == "_" ]]; then
+            clandro_core__sh__taiavn_source_output_mode="output_variable"
+        fi
+
+        clandro_core__sh__taiavn_source_output_mode_arg=" '$clandro_core__sh__taiavn_source_output_mode'"
+
+        if [[ "$clandro_core__sh__taiavn_source_output_mode" != "-" ]] && \
+                [[ "$clandro_core__sh__taiavn_source_output_mode" != ">" ]]; then
+            clandro_core__sh__taiavn_source_print_command="${NL}printf '%s' \"\${$clandro_core__sh__taiavn_source_output_mode:-}\""
+        fi
+    elif [[ "$clandro_core__sh__taiavn_command_type" == "unset-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 10 \
+            "'clandro_core__sh__clandro_apps_info_app_version_name__run_test' for the '$clandro_core__sh__taiavn_command_type' command" "$@" || return $?
+
+        local clandro_core__sh__taiavn_options="$8"
+        local clandro_core__sh__taiavn_source_print_var="$9"
+        local clandro_core__sh__taiavn_args="${10}"
+
+        if [[ "$clandro_core__sh__taiavn_source_print_var" != "-" ]]; then
+            clandro_core__sh__taiavn_source_print_command="${NL}printf '%s' \"\${$clandro_core__sh__taiavn_source_print_var:-}\""
+        fi
+    else
+        local clandro_core__sh__taiavn_args=""
+    fi
+
+
+    # shellcheck disable=SC2016
+    clandro_core__sh__taiavn_source_command='source_file_from_path() { local source_file="${1:-}"; [ $# -gt 0 ] && shift 1; local source_path; if source_path="$(command -v "$source_file")" && [ -n "$source_path" ]; then . "$source_path" || return $?; else echo "Failed to find the '\''$source_file'\'' file to source." 1>&2; return 1; fi; }'"${NL}${NL}"'
+source_file_from_path "clandro-apps-info-app-version-name.sh" --sourcing-script || exit $?'
+
+    clandro_apps_info_env_file_path="$CLANDRO_CORE__TESTS__TMPDIR_PATH/clandro-apps-info.env"
+    if [[ "$clandro_apps_info_env_file_export" == "true" ]]; then
+        clandro_apps_info_env_file_create_command="printf '%s\n' '${clandro_apps_info_env_file_content//\'/\'\\\'\'}' > '${clandro_apps_info_env_file_path//\'/\'\\\'\'}'"
+        get_export_scoped_variable_command clandro_apps_info_env_file_export_command "$CLANDRO_ENV__S_ROOT" "CORE__" "APPS_INFO_ENV_FILE" "$clandro_apps_info_env_file_path" || return $?
+    else
+        clandro_apps_info_env_file_create_command="printf '%s' '' > '${clandro_apps_info_env_file_path//\'/\'\\\'\'}'"
+        get_unset_scoped_variable_command clandro_apps_info_env_file_export_command "$CLANDRO_ENV__S_ROOT" "CORE__" "APPS_INFO_ENV_FILE" || return $?
+    fi
+
+    pre_test_commands="export CLANDRO_ENV__S_ROOT='${CLANDRO_ENV__S_ROOT//\'/\'\\\'\'}';${NL}
+unset CLANDRO_ENV__S_APP;${NL}${NL}\
+${clandro_apps_info_env_file_create_command}${NL}${NL}${clandro_apps_info_env_file_export_command}${NL}${NL}\
+${pre_test_commands:+"$pre_test_commands${NL}${NL}"}"
+
+    clandro_core__sh__taiavn_options="${clandro_core__sh__taiavn_options:+"$clandro_core__sh__taiavn_options "}"
+
+    if [[ "$clandro_core__sh__taiavn_command_type" == "get-value" ]]; then
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST:-}" != "true" ]]; then
+            clandro_core__sh__taiavn_call_command="clandro-apps-info-app-version-name.sh"
+            clandro_core__tests__run_script_test "clandro_core__sh__taiavn__${test_name}__exec-stdout" \
+                "#!/bin/sh${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__sh__taiavn_call_command '$clandro_core__sh__taiavn_command_type' ${clandro_core__sh__taiavn_options}'>' $clandro_core__sh__taiavn_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST:-}" != "true" ]]; then
+            clandro_core__sh__taiavn_call_command="${clandro_core__sh__taiavn_source_command}${NL}${NL}clandro_core__sh__clandro_apps_info_app_version_name"
+            clandro_core__tests__run_script_test "clandro_core__sh__taiavn__${test_name}__source-stdout" \
+                "#!/bin/sh${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__sh__taiavn_call_command '$clandro_core__sh__taiavn_command_type' ${clandro_core__sh__taiavn_options}'>' $clandro_core__sh__taiavn_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+    fi
+
+    if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST:-}" != "true" ]]; then
+        clandro_core__sh__taiavn_call_command="${clandro_core__sh__taiavn_source_command}${NL}${NL}clandro_core__sh__clandro_apps_info_app_version_name"
+        clandro_core__tests__run_script_test "clandro_core__sh__taiavn__${test_name}__source-var" \
+            "#!/bin/sh${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__sh__taiavn_call_command '$clandro_core__sh__taiavn_command_type' ${clandro_core__sh__taiavn_options}$clandro_core__sh__taiavn_source_output_mode_arg $clandro_core__sh__taiavn_args || exit \$?$clandro_core__sh__taiavn_source_print_command" \
+            "$expected_exit_code" "$expected_output_regex" || return $?
+    fi
+
+    return 0
+
+}
+
+
+
+clandro_core__bash__clandro_apps_info_app_version_name__run_tests() {
+
+    clandro_core__tests__log 3 "clandro_core__bash__clandro_apps_info_app_version_name()"
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME="clandro_core__bash__clandro_apps_info_app_version_name__run_test"
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__default || return $?
+    clandro_core__bash__clandro_apps_info_app_version_name__run_tests_for_scope || return $?
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__foo || return $?
+    clandro_core__bash__clandro_apps_info_app_version_name__run_tests_for_scope || return $?
+
+    return 0
+
+}
+
+clandro_core__bash__clandro_apps_info_app_version_name__run_tests_for_scope() {
+
+    CLANDRO_ENV__S_ROOT="$CLANDRO_CORE__TESTS__CLANDRO_ENV__S_ROOT"
+
+
+    clandro_core__clandro_apps_info_app_version_name__test__usage "usage" \
+        "APP__" "STRING" || return $?
+
+
+
+    # `CLANDRO_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-app_app-version-name" \
+        "APP__" "clandro-app" "--extended-validator=\"r+=^(()|(clandro-[0-9].*))$\"" || return $?
+
+
+
+    # `CLANDRO_API_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-api-app_app-version-name" \
+        "API_APP__" "clandro-api-app" "--extended-validator=\"r+=^(()|(clandro-[0-9].*))$\"" || return $?
+
+
+
+    # `CLANDRO_FLOAT_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-float-app_app-version-name" \
+        "FLOAT_APP__" "clandro-float-app" "--extended-validator=\"r+=^(()|(clandro-[0-9].*))$\"" || return $?
+
+
+
+    # `CLANDRO_GUI_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-gui-app_app-version-name" \
+        "GUI_APP__" "clandro-gui-app" "--extended-validator=\"r+=^(()|(clandro-[0-9].*))$\"" || return $?
+
+
+
+    # `CLANDRO_TASKER_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-tasker-app_app-version-name" \
+        "TASKER_APP__" "clandro-tasker-app" "--extended-validator=\"r+=^(()|(clandro-[0-9].*))$\"" || return $?
+
+
+
+    # `CLANDRO_WIDGET_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-widget-app_app-version-name" \
+        "WIDGET_APP__" "clandro-widget-app" "--extended-validator=\"r+=^(()|(clandro-[0-9].*))$\"" || return $?
+
+
+
+    # `CLANDRO_X11_APP__APP_VERSION_NAME`.
+    clandro_core__clandro_apps_info_app_version_name__test__app_version_name "clandro-x11-app_app-version-name" \
+        "X11_APP__" "clandro-x11-app" "--extended-validator=\"r+=^(()|(clandro-[0-9].*))$\"" || return $?
+
+    return 0
+
+}
+
+clandro_core__bash__clandro_apps_info_app_version_name__run_test() {
+
+    clandro_core__tests__validate_argument_count ge $# 7 clandro_core__bash__clandro_apps_info_app_version_name__run_test "$@" || return $?
+
+    local test_name="$1"
+    local pre_test_commands="$2"
+    local clandro_apps_info_env_file_export="$3"
+    local clandro_apps_info_env_file_content="$4"
+    local expected_exit_code="$5"
+    local expected_output_regex="$6"
+    local clandro_core__bash__taiavn_command_type="$7"
+
+    local clandro_apps_info_env_file_create_command
+    local clandro_apps_info_env_file_export_command
+    local clandro_apps_info_env_file_path
+    local clandro_core__bash__taiavn_call_command
+    local clandro_core__bash__taiavn_source_command
+    local clandro_core__bash__taiavn_source_output_mode_arg=""
+    local clandro_core__bash__taiavn_source_print_command=""
+
+    if [[ "$clandro_core__bash__taiavn_command_type" == "get-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 10 \
+            "'clandro_core__bash__clandro_apps_info_app_version_name__run_test' for the '$clandro_core__bash__taiavn_command_type' command" "$@" || return $?
+
+        local clandro_core__bash__taiavn_options="$8"
+        local clandro_core__bash__taiavn_source_output_mode="$9"
+        local clandro_core__bash__taiavn_args="${10}"
+
+        if [[ "$clandro_core__bash__taiavn_source_output_mode" == "_" ]]; then
+            clandro_core__bash__taiavn_source_output_mode="output_variable"
+        fi
+
+        clandro_core__bash__taiavn_source_output_mode_arg=" '$clandro_core__bash__taiavn_source_output_mode'"
+
+        if [[ "$clandro_core__bash__taiavn_source_output_mode" != "-" ]] && \
+                [[ "$clandro_core__bash__taiavn_source_output_mode" != ">" ]]; then
+            clandro_core__bash__taiavn_source_print_command="${NL}printf '%s' \"\${$clandro_core__bash__taiavn_source_output_mode:-}\""
+        fi
+    elif [[ "$clandro_core__bash__taiavn_command_type" == "unset-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 10 \
+            "'clandro_core__bash__clandro_apps_info_app_version_name__run_test' for the '$clandro_core__bash__taiavn_command_type' command" "$@" || return $?
+
+        local clandro_core__bash__taiavn_options="$8"
+        local clandro_core__bash__taiavn_source_print_var="$9"
+        local clandro_core__bash__taiavn_args="${10}"
+
+        if [[ "$clandro_core__bash__taiavn_source_print_var" != "-" ]]; then
+            clandro_core__bash__taiavn_source_print_command="${NL}printf '%s' \"\${$clandro_core__bash__taiavn_source_print_var:-}\""
+        fi
+    else
+        local clandro_core__bash__taiavn_args=""
+    fi
+
+
+    # shellcheck disable=SC2016
+    clandro_core__bash__taiavn_source_command='source_file_from_path() { local source_file="${1:-}"; [ $# -gt 0 ] && shift 1; local source_path; if source_path="$(command -v "$source_file")" && [ -n "$source_path" ]; then source "$source_path" || return $?; else echo "Failed to find the '\''$source_file'\'' file to source." 1>&2; return 1; fi; }'"${NL}${NL}"'
+source_file_from_path "clandro-apps-info-app-version-name.bash" || exit $?'
+
+    clandro_apps_info_env_file_path="$CLANDRO_CORE__TESTS__TMPDIR_PATH/clandro-apps-info.env"
+    if [[ "$clandro_apps_info_env_file_export" == "true" ]]; then
+        clandro_apps_info_env_file_create_command="printf '%s\n' '${clandro_apps_info_env_file_content//\'/\'\\\'\'}' > '${clandro_apps_info_env_file_path//\'/\'\\\'\'}'"
+        get_export_scoped_variable_command clandro_apps_info_env_file_export_command "$CLANDRO_ENV__S_ROOT" "CORE__" "APPS_INFO_ENV_FILE" "$clandro_apps_info_env_file_path" || return $?
+    else
+        clandro_apps_info_env_file_create_command="printf '%s' '' > '${clandro_apps_info_env_file_path//\'/\'\\\'\'}'"
+        get_unset_scoped_variable_command clandro_apps_info_env_file_export_command "$CLANDRO_ENV__S_ROOT" "CORE__" "APPS_INFO_ENV_FILE" || return $?
+    fi
+
+    pre_test_commands="export CLANDRO_ENV__S_ROOT='${CLANDRO_ENV__S_ROOT//\'/\'\\\'\'}';${NL}
+unset CLANDRO_ENV__S_APP;${NL}${NL}\
+${clandro_apps_info_env_file_create_command}${NL}${NL}${clandro_apps_info_env_file_export_command}${NL}${NL}\
+${pre_test_commands:+"$pre_test_commands${NL}${NL}"}"
+
+    clandro_core__bash__taiavn_options="${clandro_core__bash__taiavn_options:+"$clandro_core__bash__taiavn_options "}"
+
+    if [[ "$clandro_core__bash__taiavn_command_type" == "get-value" ]]; then
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST:-}" != "true" ]]; then
+            clandro_core__bash__taiavn_call_command="clandro-apps-info-app-version-name.bash"
+            clandro_core__tests__run_script_test "clandro_core__bash__taiavn__${test_name}__exec-stdout" \
+                "#!/bin/bash${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__bash__taiavn_call_command '$clandro_core__bash__taiavn_command_type' ${clandro_core__bash__taiavn_options}'>' $clandro_core__bash__taiavn_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST:-}" != "true" ]]; then
+            clandro_core__bash__taiavn_call_command="${clandro_core__bash__taiavn_source_command}${NL}${NL}clandro_core__bash__clandro_apps_info_app_version_name"
+            clandro_core__tests__run_script_test "clandro_core__bash__taiavn__${test_name}__source-stdout" \
+                "#!/bin/bash${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__bash__taiavn_call_command '$clandro_core__bash__taiavn_command_type' ${clandro_core__bash__taiavn_options}'>' $clandro_core__bash__taiavn_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+    fi
+
+    if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST:-}" != "true" ]]; then
+        clandro_core__bash__taiavn_call_command="${clandro_core__bash__taiavn_source_command}${NL}${NL}clandro_core__bash__clandro_apps_info_app_version_name"
+        clandro_core__tests__run_script_test "clandro_core__bash__taiavn__${test_name}__source-var" \
+            "#!/bin/bash${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__bash__taiavn_call_command '$clandro_core__bash__taiavn_command_type' ${clandro_core__bash__taiavn_options}$clandro_core__bash__taiavn_source_output_mode_arg $clandro_core__bash__taiavn_args || exit \$?$clandro_core__bash__taiavn_source_print_command" \
+            "$expected_exit_code" "$expected_output_regex" || return $?
+    fi
+
+    return 0
+
+}
+
+
+
+clandro_core__clandro_apps_info_app_version_name__test__usage() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 3 clandro_core__clandro_apps_info_app_version_name__test__usage "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+
+    local env_command
+    local env_file
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_command_unset" \
+        "" \
+        "false" "" \
+        64 "^The command '' passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_app_version_name' is not valid\..*$" \
+        "" "" - "" || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_command_invalid" \
+        "" \
+        "false" "" \
+        64 "^The command 'get-value1' passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_app_version_name' is not valid\..*$" \
+        get-value1 "" - "" || return $?
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_command_args_invalid-less" \
+        "" \
+        "false" "" \
+        64 "^Invalid argument count 1 for the 'get-value' command\. The \
+'clandro_core__([a-z_]+)__clandro_apps_info_app_version_name' function expects 2 arguments\..*$" \
+        get-value "" - "" || return $?
+
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_none" \
+        "" \
+        "false" "" \
+        64 "^The output_mode '' argument passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_app_version_name' is not a valid environment variable name, or equal to \`>\` or \`-\`\..*$" \
+        get-value "" "" 'ss="APP__"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_invalid" \
+        "" \
+        "false" "" \
+        64 "^The output_mode '1foo' argument passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_app_version_name' is not a valid environment variable name, or equal to \`>\` or \`-\`\..*$" \
+        get-value "" "1foo" 'ss="APP__"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "APP__" "APP_VERSION_NAME" "0.1.0" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_output-mode-stdout_value-valid" \
+        "$env_command" \
+        "false" "" \
+        0 "^0.\1\.0$" \
+        get-value "--skip-sourcing" ">" 'ss="APP__"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "APP__" "APP_VERSION_NAME" "0.1.0" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_output-mode-dash_value-valid" \
+        "$env_command" \
+        "false" "" \
+        0 "^$" \
+        get-value "--skip-sourcing" "-" 'ss="APP__"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+    append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "BAR_APP__" "APP_VERSION_NAME" "0.2.0" || return $?
+    get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "BAR_APP__" "APP_VERSION_NAME" "0.1.0" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_var-already-set_value-set" \
+        "$env_command" \
+        "true" "$env_file" \
+        0 "^0.\1\.0$" \
+        get-value "" "${CLANDRO_ENV__S_ROOT}BAR_APP__APP_VERSION_NAME" 'ss="BAR_APP__"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+    append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "BAR_APP__" "APP_VERSION_NAME" "0.2.0" || return $?
+    get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "BAR_APP__" "APP_VERSION_NAME" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_var-already-set_value-empty" \
+        "$env_command" \
+        "true" "$env_file" \
+        0 "^$" \
+        get-value "" "${CLANDRO_ENV__S_ROOT}BAR_APP__APP_VERSION_NAME" 'ss="BAR_APP__"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+    append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "BAR_APP__" "APP_VERSION_NAME" "0.2.0" || return $?
+    get_unset_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "BAR_APP__" "APP_VERSION_NAME" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_var-already-set_value-unset" \
+        "$env_command" \
+        "true" "$env_file" \
+        0 "^$" \
+        get-value "" "${CLANDRO_ENV__S_ROOT}BAR_APP__APP_VERSION_NAME" 'ss="BAR_APP__"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope_none" \
+        "" \
+        "false" "" \
+        64 "^The scoped_var_scope_mode '' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_env_variable' is not valid\..*$" \
+        get-value "" _ '""' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope_invalid-with-no-arg" \
+        "" \
+        "false" "" \
+        64 "^The scoped_var_scope_mode 't=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_env_variable' is not valid\..*$" \
+        get-value "" _ 't=' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope_invalid-with-arg" \
+        "" \
+        "false" "" \
+        64 "^The scoped_var_scope_mode 't=_' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_env_variable' is not valid\..*$" \
+        get-value "" _ 't="_"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_component-name_invalid-with-no-arg" \
+        "" \
+        "false" "" \
+        64 "^The scoped_var_scope_mode 'cn=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_env_variable' is not valid\..*$" \
+        get-value "" _ 'cn=' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_component-name_invalid-with-arg" \
+        "" \
+        "false" "" \
+        64 "^The scoped_var_scope_mode 'cn=foo' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_env_variable' is not valid\..*$" \
+        get-value "" _ 'cn="foo"' || return $?
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_no-arg" \
+        "" \
+        "false" "" \
+        64 "^The scoped_var_scope_mode 's=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_env_variable' is not valid\..*$" \
+        get-value "" _ 's=""' || return $?
+
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "1" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_var-root-scope-invalid" \
+        "$env_command" \
+        "false" "" \
+        0 "^$" \
+        get-value "--skip-sourcing" _ 's="BAR_APP__"' || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_var-sub-scope-invalid" \
+        "$env_command" \
+        "false" "" \
+        64 "^The name of the variable to unset 'BAR#_APP__APP_VERSION_NAME' generated in \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value "" _ 's="BAR#_APP__"' || return $?
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_no-arg" \
+        "" \
+        "false" "" \
+        64 "^The scoped_var_scope_mode 'ss=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_apps_info_env_variable' is not valid\..*$" \
+        get-value "" _ 'ss=""' || return $?
+
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "1" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_var-root-scope-invalid" \
+        "$env_command" \
+        "false" "" \
+        1 "^The CLANDRO_ENV__S_ROOT environment variable value '1' while running \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value "" _ 'ss="APP__"' || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_var-sub-scope-invalid" \
+        "$env_command" \
+        "false" "" \
+        64 "^The name of the variable to unset 'BAR_X#_APP__APP_VERSION_NAME' generated in \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value "" _ 'ss="X#_APP__"' || return $?
+
+    return 0
+
+}
+
+
+
+clandro_core__clandro_apps_info_app_version_name__test__app_version_name() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 4 clandro_core__clandro_apps_info_app_version_name__test__app_version_name "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local scoped_var_scope_mode="$3"
+    local clandro_core__validator__taiavn_args="$4"
+
+    local env_command
+    local env_file
+    local is_clandro_app_scope
+    local test_type
+    local clandro_core__taiavn__scope_args
+    local clandro_version_env_command
+    local unset_clandro_version_env_command="unset CLANDRO_ENV__S_ROOT;"
+
+    local -A test_types=()
+    test_types["scope-s"]='s="'"${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}"'"'
+    test_types["scope-ss"]='ss="'"${var_sub_scope_name}"'"'
+    test_types["component-name"]='cn="'"${scoped_var_scope_mode}"'"'
+
+    for test_type in "${!test_types[@]}"; do
+        clandro_core__taiavn__scope_args="${test_types["$test_type"]}"
+
+        if [[ "$clandro_core__taiavn__scope_args" = ss="APP__" ]] || [[ "$clandro_core__taiavn__scope_args" = cn="clandro-app" ]]; then
+            is_clandro_app_scope="true"
+            clandro_version_env_command="unset CLANDRO_VERSION;"
+        else
+            is_clandro_app_scope="false"
+            clandro_version_env_command=""
+        fi
+
+        # `--skip-sourcing`.
+        get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.1.0" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing_${test_type}_env-unset" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^$" \
+            get-value "--skip-sourcing" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.1.0" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing_${test_type}_env-empty" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^$" \
+            get-value "--skip-sourcing" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.2.0" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.1.0" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing_${test_type}_env-set" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^0\.2\.0$" \
+            get-value "--skip-sourcing" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "clandro-0.2.0" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "clandro-0.1.0" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing_${test_type}_env-set_custom_validator" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^clandro-0\.2\.0$" \
+            get-value "--skip-sourcing ${clandro_core__validator__taiavn_args}" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.1.0" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_main-variable-set" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "false" "" \
+            0 "^$" \
+            unset-value "" "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}APP_VERSION_NAME" "${clandro_core__taiavn__scope_args}" || return $?
+
+
+        # `CLANDRO_VERSION`.
+        if [[ "$is_clandro_app_scope" == "true" ]]; then
+            get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" || return $?
+            get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.1.0" || return $?
+            "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing_${test_type}_clandro_version-unset_env-unset" \
+                "${unset_clandro_version_env_command}${NL}${clandro_version_env_command}${NL}${env_command}" \
+                "true" "$env_file" \
+                0 "^$" \
+                get-value "--skip-sourcing" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+            get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" || return $?
+            get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.1.0" || return $?
+            env_command+="${NL}export CLANDRO_VERSION='0.2.0';"
+            "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing_${test_type}_clandro_version-set_env-set" \
+                "${unset_clandro_version_env_command}${NL}${clandro_version_env_command}${NL}${env_command}" \
+                "true" "$env_file" \
+                0 "^0\.2\.0$" \
+                get-value "--skip-sourcing" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+            get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "APP_VERSION_NAME" "0.1.0" || return $?
+            env_command+="${NL}export CLANDRO_VERSION='0.2.0';"
+            "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_clandro_version-variable-set" \
+                "${clandro_version_env_command}${NL}${env_command}" \
+                "false" "" \
+                0 "^$" \
+                unset-value "" "CLANDRO_VERSION" "${clandro_core__taiavn__scope_args}" || return $?
+        fi
+
+
+
+        # `--skip-sourcing-if-cur-app-var`.
+        get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}" || return $?
+        append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.2.0" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.1.0" || return $?
+        [[ "$is_clandro_app_scope" == "true" ]] && env_command+="${NL}export CLANDRO_VERSION='0.3.0';"
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_env-set_file-set_same-app" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^0\.2\.0$" \
+            get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+        get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+        append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.2.0" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.1.0" || return $?
+        [[ "$is_clandro_app_scope" == "true" ]] && env_command+="${NL}export CLANDRO_VERSION='0.3.0';"
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_env-set_file-set_different-app" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^0\.1\.0$" \
+            get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+        get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+        append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.2.0" || return $?
+        get_unset_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_env-set_file-unset_different-app" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^$" \
+            get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+        get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}" || return $?
+        append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "b" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "a" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_env-invalid_file-invalid_same-app" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            81 "^Failed to find a valid value .*$" \
+            get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+        get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+        append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "b" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "a" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_env-invalid_file-invalid_different-app" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            81 "^Failed to find a valid value .*$" \
+            get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+
+        get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+        append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "clandro-0.2.0" || return $?
+        get_export_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "clandro-0.1.0" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_env-set_file-set_different-app_custom_validator" \
+            "${clandro_version_env_command}${NL}${env_command}" \
+            "true" "$env_file" \
+            0 "^clandro-0\.1\.0$" \
+            get-value "${clandro_core__validator__taiavn_args}" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+
+        # `CLANDRO_VERSION`.
+        if [[ "$is_clandro_app_scope" == "true" ]]; then
+            get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}" || return $?
+            append_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.2.0" || return $?
+            get_unset_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" || return $?
+            env_command+="${NL}export CLANDRO_VERSION='0.1.0';"
+            "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_clandro_version-set_env-unset_file-unset_same-app" \
+                "${unset_clandro_version_env_command}${NL}${clandro_version_env_command}${NL}${env_command}" \
+                "true" "$env_file" \
+                0 "^0\.1\.0$" \
+                get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+            get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}" || return $?
+            append_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.2.0" || return $?
+            get_unset_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" || return $?
+            "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_clandro_version-unset_env-unset_file-unset_same-app" \
+                "${unset_clandro_version_env_command}${NL}${clandro_version_env_command}${NL}${env_command}" \
+                "true" "$env_file" \
+                0 "^$" \
+                get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+
+            get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+            append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.2.0" || return $?
+            get_unset_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" || return $?
+            env_command+="${NL}export CLANDRO_VERSION='0.1.0';"
+            "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_clandro_version-set_env-set_file-unset_different-app" \
+                "${unset_clandro_version_env_command}${NL}${clandro_version_env_command}${NL}${env_command}" \
+                "true" "$env_file" \
+                0 "^0\.1\.0$" \
+                get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+
+            get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_APP" "${CLANDRO_ENV__S_ROOT}DIFF_APP__" || return $?
+            append_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" "0.2.0" || return $?
+            get_unset_scoped_variable_command env_file "$CLANDRO_ENV__S_ROOT" "${var_sub_scope_name}" "APP_VERSION_NAME" || return $?
+            "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_skip-sourcing-if-cur-app-var_${test_type}_clandro_version-unset_env-set_file-unset_different-app" \
+                "${unset_clandro_version_env_command}${NL}${clandro_version_env_command}${NL}${env_command}" \
+                "true" "$env_file" \
+                0 "^$" \
+                get-value "" _ "${clandro_core__taiavn__scope_args}" || return $?
+        fi
+    done
+
+    return 0
+
+}

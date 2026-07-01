@@ -1,0 +1,463 @@
+#!@CLANDRO__PREFIX@/bin/bash
+# shellcheck shell=bash
+
+##
+# `clandro_external_packages__tests__main`
+##
+clandro_external_packages__tests__main() {
+
+    CLANDRO_CORE__TESTS__LOG_TAG="@CLANDRO__LNAME@-external-pkgs.tests"
+
+    clandro_core__tests__log 4 "main()"
+
+    # Set `CLANDRO_CORE__TESTS__TESTS_PATH` used by compiled c tests.
+    if [[ ! "$CLANDRO_CORE__TESTS__TESTS_PATH" =~ $CLANDRO_CORE__TESTS__REGEX__ROOTFS_OR_ABSOLUTE_PATH ]]; then
+        clandro_core__tests__log_error "The CLANDRO_CORE__TESTS__TESTS_PATH '$CLANDRO_CORE__TESTS__TESTS_PATH' is either not set or is not an absolute path"
+        return 1
+    fi
+
+
+    # Run tests.
+    clandro_external_packages__tests__run_tests || return $?
+
+    return 0
+}
+
+##
+# `clandro_external_packages__tests__run_tests`
+##
+clandro_external_packages__tests__run_tests() {
+
+    clandro_core__tests__log 2 "runTests(start)"
+
+    CLANDRO_CORE__TESTS__TESTS_COUNT="0"
+    CLANDRO_CORE__TESTS__LOG_EMPTY_LINE_AFTER_SCRIPT_TEST="true"
+
+
+
+    if [[ "android-tools" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__android_tools) || return $?
+    fi
+
+    if [[ "clandro-exec" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__clandro_exec) || return $?
+    fi
+
+    if [[ "clandro-tools" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__clandro_tools) || return $?
+    fi
+
+    if [[ "clandro-am" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__clandro_am) || return $?
+    fi
+
+    if [[ "clandro-am-socket" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__clandro_am_socket) || return $?
+    fi
+
+    if [[ "clandro-api" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__clandro_api) || return $?
+    fi
+
+    if [[ "tudo" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__tudo) || return $?
+    fi
+
+    if [[ "sudo" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        (test__sudo) || return $?
+    fi
+
+
+
+    # Some package tests are run by external scripts, so not part of count.
+    clandro_core__tests__log 2 "runTests(end): $CLANDRO_CORE__TESTS__TESTS_COUNT internal tests completed"
+
+    return 0
+}
+
+
+
+test__android_tools() {
+
+    [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" != "true" ]] && return 0
+
+    clandro_core__tests__log 3 "test__android_tools()"
+
+    # Remove LD_LIBRARY_PATH from environment to avoid conflicting
+    # with system libraries that system binaries may link against
+    # Some tools require having /system/bin/app_process in the PATH,
+    # at least `am` and `pm` on a Nexus 6p running Android `6.0`.
+    local android_env="LD_LIBRARY_PATH= LD_PRELOAD= PATH=/system/bin"
+
+    clandro_core__tests__run_script_test "android-getprop-ro-build-version-sdk" \
+        "#!/usr/bin/bash${NL}${android_env} /system/bin/getprop 'ro.build.version.sdk'" \
+        0 "^[0-9]+$" || return $?
+
+    clandro_core__tests__run_script_test "android-pm-list-clandro-package" \
+        "#!/usr/bin/bash${NL}out=\"\$(${android_env} /system/bin/pm list packages -u --user '$CLANDRO__USER_ID' 2>&1 </dev/null)\"; echo \"\$out\" | grep '$CLANDRO_APP__PACKAGE_NAME'" \
+        0 "^.*package:$CLANDRO_APP__PACKAGE_NAME.*$" || return $?
+
+    clandro_core__tests__run_script_test "android-logcat" \
+        "#!/usr/bin/bash${NL}${android_env} /system/bin/logcat -d -t 100" \
+        0 "^.*..*$" || return $?
+
+    return 0
+
+}
+
+
+
+test__clandro_exec() {
+
+    clandro_core__tests__log 3 "test__clandro_exec()"
+
+    local clandro_exec__tests_file_path="$CLANDRO__PREFIX/libexec/installed-tests/clandro-exec/app/main/clandro-exec-tests"
+
+    if [[ ! -f "$clandro_exec__tests_file_path" ]]; then
+        clandro_core__tests__log 3 "Skipping clandro-exec tests since 'clandro-exec-tests' file not found"
+        return 0
+    fi
+
+    printf -v "$CLANDRO_EXEC__TESTS__LOG_LEVEL___N" "%s" "$CLANDRO_CORE__TESTS__LOG_LEVEL" || exit $?
+    export "${CLANDRO_EXEC__TESTS__LOG_LEVEL___N?}" || exit $?
+
+    local -a command_options=()
+
+    if [[ "$CLANDRO_CORE__TESTS__USE_FSANITIZE_BUILDS" == "true" ]]; then
+        command_options+=("-f")
+    fi
+
+    if [[ "$CLANDRO_CORE__TESTS__DETECT_LEAKS" == "true" ]]; then
+        command_options+=("-l")
+    fi
+
+    "$clandro_exec__tests_file_path" "${command_options[@]}" "$CLANDRO_CORE__TESTS__COMMAND_TYPE_ID" || return $?
+
+    return 0
+
+}
+
+
+
+test__clandro_tools() {
+
+    [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" != "true" ]] && return 0
+
+    clandro_core__tests__log 3 "test__clandro_tools()"
+
+    clandro_core__tests__run_script_test "clandro-getprop-ro-build-version-sdk" \
+        "#!/usr/bin/bash${NL}getprop 'ro.build.version.sdk'" \
+        0 "^[0-9]+$" || return $?
+
+    clandro_core__tests__run_script_test "clandro-pm-list-clandro-package" \
+        "#!/usr/bin/bash${NL}out=\"\$(pm list packages -u --user '$CLANDRO__USER_ID' 2>&1 </dev/null)\"; echo \"\$out\" | grep '$CLANDRO_APP__PACKAGE_NAME'" \
+        0 "^.*package:$CLANDRO_APP__PACKAGE_NAME.*$" || return $?
+
+    clandro_core__tests__run_script_test "clandro-logcat" \
+        "#!/usr/bin/bash${NL}logcat -d -t 100" \
+        0 "^.*..*$" || return $?
+
+    if [ "$ANDROID__BUILD_VERSION_SDK" -ge 24 ]; then
+        clandro_core__tests__run_script_test "clandro-info" \
+            "#!/usr/bin/bash${NL}clandro-info --no-set-clipboard" \
+            0 "^.*$CLANDRO__USER_ID___N=$CLANDRO__USER_ID.*$" || return $?
+    fi
+
+    # Send empty file/url and just check no error was set while sending intent.
+    clandro_core__tests__run_script_test "clandro-open" \
+        "#!/usr/bin/bash${NL}clandro-open ''" \
+        0 "^.*.*$" || return $?
+
+    # Just check no error was set while sending intent.
+    # clandro-setup-storage, sends the same intent but requires ~/storage
+    # directory to not exist, so do not test that.
+    clandro_core__tests__run_script_test "clandro-reload-settings" \
+        "#!/usr/bin/bash${NL}clandro-reload-settings" \
+        0 "^.*.*$" || return $?
+
+    return 0
+
+}
+
+
+
+test__clandro_am() {
+
+    [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" != "true" ]] && return 0
+
+    clandro_core__tests__log 3 "test__clandro_am()"
+
+    # The `--user` flag must be passed if running in a secondary user (`> 0`).
+    test__clandro_am__wrapper "-user" " --user '$CLANDRO__USER_ID'" || return $?
+
+    # If `--user` flag is not passed to  `am`, then it should
+    # automatically use current user as default, so test that.
+    test__clandro_am__wrapper "-current-user" "" || return $?
+
+    return 0
+
+}
+
+test__clandro_am__wrapper() {
+
+    local test_name_suffix="$1"
+    local user_id_arg="$2"
+
+    # Set `rw-------` permission for `am.apk` to test if `am` correctly
+    # makes it read-only to prevent`SIGABRT` on Android `>= 14`.
+    # - https://github.com/cl-andro/ClandroAm/commit/598a9c06c325db6d41cc840dedcb8ba34564c79f
+    local am_apk_path="$CLANDRO__PREFIX/libexec/clandro-am/am.apk"
+    chmod 0600 "$am_apk_path" || return $?
+
+
+    if [ "$ANDROID__BUILD_VERSION_SDK" -ge 34 ]; then
+        clandro_core__tests__run_script_test "am-broadcast$test_name_suffix" \
+            "#!/usr/bin/bash${NL}am broadcast$user_id_arg -a '$CLANDRO_APP__PACKAGE_NAME.test' '$CLANDRO_APP__PACKAGE_NAME'" \
+            0 "^.*Broadcast sent without waiting for result$" || return $?
+    else
+        clandro_core__tests__run_script_test "am-broadcast$test_name_suffix" \
+            "#!/usr/bin/bash${NL}am broadcast$user_id_arg -a '$CLANDRO_APP__PACKAGE_NAME.test' '$CLANDRO_APP__PACKAGE_NAME'" \
+            0 "^.*Broadcast completed: result=0$" || return $?
+    fi
+
+    # FIXME: Read env variable otherwise default.
+    clandro_core__tests__run_script_test "am-start-activity$test_name_suffix" \
+        "#!/usr/bin/bash${NL}am start$user_id_arg '$CLANDRO_APP__PACKAGE_NAME/$CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME'" \
+        0 "^.*Starting: Intent \{.*\}.*$" || return $?
+
+    clandro_core__tests__run_script_test "am-start-service$test_name_suffix" \
+        "#!/usr/bin/bash${NL}am startservice$user_id_arg '$CLANDRO_APP__PACKAGE_NAME/$CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME'" \
+        0 "^.*Starting service: Intent \{.*\}.*$" || return $?
+
+    return 0
+
+}
+
+
+
+test__clandro_am_socket() {
+
+    [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" != "true" ]] && return 0
+
+    clandro_core__tests__log 3 "test__clandro_am_socket()"
+
+    # If cannot connect to `ClandroAmSocketServer` in clandro-app to get `am` help.
+    if [[ "$(clandro-am --am-help 2>/dev/null)" != *"usage: am "* ]]; then
+        clandro_core__tests__log 3 "Skipping clandro-am-socket tests since failed to connect to server"
+        return 0
+    fi
+
+
+    # The `--user` flag must be passed if running in a secondary user (`> 0`).
+    test__clandro_am_socket__wrapper "-user" " --user '$CLANDRO__USER_ID'" || return $?
+
+    # If `--user` flag is not passed to  `clandro-am`, then it should
+    # automatically use current user as default, so test that.
+    if [[ "$CLANDRO__USER_ID" == "0" ]]; then
+        test__clandro_am_socket__wrapper "-current-user" "" || return $?
+    fi
+
+    return 0
+
+}
+
+test__clandro_am_socket__wrapper() {
+
+    local test_name_suffix="$1"
+    local user_id_arg="$2"
+
+    clandro_core__tests__run_script_test "clandro-am-broadcast$test_name_suffix" \
+        "#!/usr/bin/bash${NL}clandro-am broadcast$user_id_arg -a '$CLANDRO_APP__PACKAGE_NAME.test' '$CLANDRO_APP__PACKAGE_NAME'" \
+        0 "^.*Broadcast completed: result=.*$" || return $? # resultCode seems to be -1
+
+    # FIXME: Read env variable otherwise default.
+    clandro_core__tests__run_script_test "clandro-am-start-activity$test_name_suffix" \
+        "#!/usr/bin/bash${NL}clandro-am start$user_id_arg '$CLANDRO_APP__PACKAGE_NAME/$CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME'" \
+        0 "^.*Starting: Intent \{.*\}.*$" || return $?
+
+    clandro_core__tests__run_script_test "clandro-am-start-service$test_name_suffix" \
+        "#!/usr/bin/bash${NL}clandro-am startservice$user_id_arg '$CLANDRO_APP__PACKAGE_NAME/$CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME'" \
+        0 "^.*Starting service: Intent \{.*\}.*$" || return $?
+
+    return 0
+
+}
+
+
+
+test__clandro_api() {
+
+    [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" != "true" ]] && return 0
+
+    clandro_core__tests__log 3 "test__clandro_api()"
+
+    # If running as root.
+    if [[ "$CLANDRO_CORE__TESTS__UID" == "0" ]]; then
+        clandro_core__tests__log 3 "Skipping clandro-api tests since running as root"
+        return 0
+    fi
+
+
+    # This must be run after `ClandroShellCommandEnvioronment_runTests()`.
+    # Check if `clandro-apps-info.env` file exists whose path is exported in
+    # the `$CLANDRO_CORE__APPS_INFO_ENV_FILE` environment variable by the
+    # Clandro app running the current shell, which is sourced by
+    # `clandro_core__bash__clandro_apps_info_app_version_name` to load the
+    # latest value in the current environment for
+    # `$CLANDRO_API_APP__APP_VERSION_NAME` before getting it.
+    # The `clandro-apps-app-version-name.bash` (under `$PATH`) and
+    # `clandro-apps-info.env` file (as `$CLANDRO_CORE__APPS_INFO_ENV_FILE` not exported)
+    # will not be available in Clandro docker.
+    CLANDRO_API_APP__APP_VERSION_NAME___N="@CLANDRO_ENV__S_CLANDRO_API_APP@APP_VERSION_NAME"
+
+    clandro_core__tests__log 5 "$CLANDRO_CORE__APPS_INFO_ENV_FILE___N='$CLANDRO_CORE__APPS_INFO_ENV_FILE'"
+    if [ -n "$CLANDRO_CORE__APPS_INFO_ENV_FILE" ] && [ -f "$CLANDRO_CORE__APPS_INFO_ENV_FILE" ]; then
+        # Source for `clandro_core__bash__clandro_apps_info_app_version_name` function.
+        clandro_core__tests__source_file_from_path "clandro-apps-app-version-name.bash" || return $?
+
+        clandro_core__bash__clandro_apps_info_app_version_name get-value \
+            "CLANDRO_API_APP__APP_VERSION_NAME" cn="clandro-api-app" || return $?
+        clandro_core__tests__log 5 "$CLANDRO_API_APP__APP_VERSION_NAME___N='$CLANDRO_API_APP__APP_VERSION_NAME'"
+    else
+        # Fallback to manually exported variable by caller.
+        clandro_core__tests__copy_variable CLANDRO_API_APP__APP_VERSION_NAME "$CLANDRO_API_APP__APP_VERSION_NAME___N"
+
+        CLANDRO_API_APP__APP_VERSION_NAME="${CLANDRO_API_APP__APP_VERSION_NAME:-}"
+        clandro_core__tests__log 5 "${CLANDRO_API_APP__APP_VERSION_NAME___N}__FALLBACK='$CLANDRO_API_APP__APP_VERSION_NAME'"
+    fi
+
+
+    # If `clandro-app` did not export the version variable for `clandro-api` app.
+    if [[ ! "$CLANDRO_API_APP__APP_VERSION_NAME" =~ ^[0-9].*$ ]]; then
+        clandro_core__tests__log 3 "Skipping clandro-api tests since app not installed"
+        return 0
+    fi
+
+    # If `clandro-api-package` is not installed.
+    if [[ ! -f "$CLANDRO__PREFIX/libexec/clandro-api" ]]; then
+        clandro_core__tests__log 3 "Skipping clandro-api tests since package not installed"
+        return 0
+    fi
+
+
+    clandro_core__tests__run_script_test "clandro-battery-status" \
+        "#!/usr/bin/bash${NL}clandro-battery-status" \
+        0 "^.*\"percentage\": [0-9]+.*$" || return $?
+
+    clandro_core__tests__run_script_test "clandro-usb" \
+        "#!/usr/bin/bash${NL}clandro-usb -l" \
+        0 "^\[.*\]$" || return $?
+
+    clandro_core__tests__run_script_test "clandro-clipboard-set" \
+        "#!/usr/bin/bash${NL}clandro-clipboard-set clandro-api-test" \
+        0 "^$" || return $?
+
+    # Wait for clipboard to be set.
+    sleep 3
+
+    clandro_core__tests__run_script_test "clandro-clipboard-get" \
+        "#!/usr/bin/bash${NL}clandro-clipboard-get" \
+        0 "^clandro-api-test$" || return $?
+
+    return 0
+
+}
+
+
+
+test__tudo() {
+
+    local return_value
+
+    [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" != "true" ]] && return 0
+
+    clandro_core__tests__log 3 "test__tudo()"
+
+    local tudo_script_file_path="$CLANDRO__PREFIX/bin/tudo"
+    local tudo_tests_file_path="$CLANDRO__PREFIX/libexec/installed-tests/tudo/tudo_tests"
+    local tudo_version_string
+    local tudo_version_regex='^tudo version=[^ ]+ org=agnostic-apollo project=tudo$'
+
+    if [[ ! -f "$tudo_script_file_path" ]]; then
+        clandro_core__tests__log 3 "Skipping tudo tests since tudo not installed"
+        return 0
+    fi
+
+    if [[ ! -f "$tudo_tests_file_path" ]]; then
+        clandro_core__tests__log 3 "Skipping tudo tests since 'tudo_tests' file not found"
+        return 0
+    fi
+
+
+    tudo_version_string="$("$tudo_script_file_path" --version)"
+    return_value=$?
+    if [ $return_value -ne 0 ] || [ -z "$tudo_version_string" ]; then
+        clandro_core__tests__log 3 "Skipping tudo tests since failed to get 'tudo' version string"
+        return 0
+    fi
+
+    if [[ ! "$tudo_version_string" =~ $tudo_version_regex ]]; then
+        clandro_core__tests__log 3 "Skipping tudo tests since 'tudo' version string is not for 'tudo' project provided by 'agnostic-apollo' org: '$tudo_version_string'"
+        return 0
+    fi
+
+
+    TUDO_TESTS__LOG_LEVEL="$CLANDRO_CORE__TESTS__LOG_LEVEL" "$tudo_tests_file_path" || return $?
+
+    return 0
+
+}
+
+
+
+test__sudo() {
+
+    local return_value
+
+    [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" != "true" ]] && return 0
+
+    clandro_core__tests__log 3 "test__sudo()"
+
+    local sudo_script_file_path="$CLANDRO__PREFIX/bin/sudo"
+    local sudo_tests_file_path="$CLANDRO__PREFIX/libexec/installed-tests/sudo/sudo_tests"
+    local sudo_version_string
+    local sudo_version_regex='^sudo version=[^ ]+ org=agnostic-apollo project=sudo$'
+
+    if [[ "$CLANDRO_CORE__TESTS__UID" != "0" ]]; then
+        if [[ "$(su -c "id -u")" != "0" ]]; then
+            clandro_core__tests__log 3 "Skipping sudo tests since root access is not available"
+            return 0
+        fi
+    fi
+
+    if [[ ! -f "$sudo_script_file_path" ]]; then
+        clandro_core__tests__log 3 "Skipping sudo tests since sudo not installed"
+        return 0
+    fi
+
+    if [[ ! -f "$sudo_tests_file_path" ]]; then
+        clandro_core__tests__log 3 "Skipping sudo tests since 'sudo_tests' file not found"
+        return 0
+    fi
+
+
+    # Run tests only for `sudo` project provided by 'agnostic-apollo' org,
+    # and not for other `sudo` implementations like `tsu`.
+    sudo_version_string="$("$sudo_script_file_path" --version)"
+    return_value=$?
+    if [ $return_value -ne 0 ] || [ -z "$sudo_version_string" ]; then
+        clandro_core__tests__log 3 "Skipping sudo tests since failed to get 'sudo' version string"
+        return 0
+    fi
+
+    if [[ ! "$sudo_version_string" =~ $sudo_version_regex ]]; then
+        clandro_core__tests__log 3 "Skipping sudo tests since 'sudo' version string is not for 'sudo' project provided by 'agnostic-apollo' org: '$sudo_version_string'"
+        return 0
+    fi
+
+
+    SUDO_TESTS__LOG_LEVEL="$CLANDRO_CORE__TESTS__LOG_LEVEL" "$sudo_tests_file_path" || return $?
+
+    return 0
+
+}

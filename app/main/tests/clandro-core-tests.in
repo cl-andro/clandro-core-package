@@ -1,0 +1,1029 @@
+#!@CLANDRO__PREFIX@/bin/bash
+# shellcheck shell=bash
+
+if [ -z "${BASH_VERSION:-}" ]; then
+    echo "The 'clandro-core-tests' script must be run from a 'bash' shell."; return 64 2>/dev/null|| exit 64 # EX__USAGE
+fi
+
+clandro_core__tests__init() {
+
+CLANDRO_CORE__TESTS__LOG_LEVEL___N="@CLANDRO_ENV__S_CLANDRO_CORE__TESTS@LOG_LEVEL"
+clandro_core__tests__copy_variable CLANDRO_CORE__TESTS__LOG_LEVEL "$CLANDRO_CORE__TESTS__LOG_LEVEL___N" || return $?
+
+CLANDRO_CORE__TESTS__MAX_LOG_LEVEL=5 # Default: `5` (VVVERBOSE=5)
+{ [[ ! "${CLANDRO_CORE__TESTS__LOG_LEVEL:-}" =~ ^[0-9]+$ ]] || [[ "$CLANDRO_CORE__TESTS__LOG_LEVEL" -gt "$CLANDRO_CORE__TESTS__MAX_LOG_LEVEL" ]]; } && \
+CLANDRO_CORE__TESTS__LOG_LEVEL=1 # Default: `1` (OFF=0, NORMAL=1, DEBUG=2, VERBOSE=3, VVERBOSE=4 and VVVERBOSE=5)
+CLANDRO_CORE__TESTS__LOG_TAG="" # Default: ``
+
+CLANDRO_CORE__TESTS__COMMAND_TYPE_ID="" # Default: ``
+CLANDRO_CORE__TESTS__COMMAND_TYPE_NOOP="false" # Default: `false`
+
+NL=$'\n'
+
+CLANDRO_CORE__TESTS__DETECT_LEAKS=0 # Default: `0`
+CLANDRO_CORE__TESTS__USE_FSANITIZE_BUILDS="false" # Default: `false`
+CLANDRO_CORE__TESTS__NO_CLEAN="false" # Default: `false`
+[[ ! "${CLANDRO_CORE__TESTS__SKIP_CLANDRO_CORE_ENV_VARIABLE_TESTS:-}" =~ ^true|false$ ]] && \
+CLANDRO_CORE__TESTS__SKIP_CLANDRO_CORE_ENV_VARIABLE_TESTS="false" # Default: `false`
+CLANDRO_CORE__TESTS__TEST_NAMES_FILTER=""
+CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER="^.*$" # Default: `^.*$`
+
+CLANDRO_CORE__TESTS__TESTS_COUNT="0"
+CLANDRO_CORE__TESTS__LOG_EMPTY_LINE_AFTER_SCRIPT_TEST="false"
+
+CLANDRO_CORE__TESTS__NAME_MAX=255
+CLANDRO_CORE__TESTS__REGEX__ABSOLUTE_PATH='^(/[^/]+)+$'
+CLANDRO_CORE__TESTS__REGEX__ROOTFS_OR_ABSOLUTE_PATH='^((/)|((/[^/]+)+))$'
+CLANDRO_CORE__TESTS__REGEX__APP_PACKAGE_NAME="^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$"
+CLANDRO_CORE__TESTS__REGEX__UNSIGNED_INT='^[0-9]+$'
+
+
+
+# Set `CLANDRO_*` variables to environment variables exported by
+# Clandro app, otherwise default to build time placeholders.
+# This is done to support scoped and dynamic variables design.
+# The `CLANDRO_ENV__*` variables still use build time placeholders.
+
+CLANDRO_ENV__S_ROOT="@CLANDRO_ENV__S_ROOT@"
+
+
+CLANDRO_APP__NAME___N="@CLANDRO_ENV__S_CLANDRO_APP@NAME"
+clandro_core__tests__copy_variable CLANDRO_APP__NAME "$CLANDRO_APP__NAME___N" || return $?
+[[ -z "$CLANDRO_APP__NAME" ]] && \
+CLANDRO_APP__NAME="@CLANDRO_APP__NAME@"
+
+CLANDRO_APP__PACKAGE_NAME___N="@CLANDRO_ENV__S_CLANDRO_APP@PACKAGE_NAME"
+clandro_core__tests__copy_variable CLANDRO_APP__PACKAGE_NAME "$CLANDRO_APP__PACKAGE_NAME___N" || return $?
+{ [[ ! "$CLANDRO_APP__PACKAGE_NAME" =~ $CLANDRO_CORE__TESTS__REGEX__APP_PACKAGE_NAME ]] || \
+    [ "${#CLANDRO_APP__PACKAGE_NAME}" -gt $CLANDRO_CORE__TESTS__NAME_MAX ]; } && \
+CLANDRO_APP__PACKAGE_NAME="@CLANDRO_APP__PACKAGE_NAME@"
+
+CLANDRO_APP__DATA_DIR___N="@CLANDRO_ENV__S_CLANDRO_APP@DATA_DIR"
+clandro_core__tests__copy_variable CLANDRO_APP__DATA_DIR "$CLANDRO_APP__DATA_DIR___N" || return $?
+[[ ! "$CLANDRO_APP__DATA_DIR" =~ $CLANDRO_CORE__TESTS__REGEX__ABSOLUTE_PATH ]] && \
+CLANDRO_APP__DATA_DIR="@CLANDRO_APP__DATA_DIR@"
+
+
+CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME___N="@CLANDRO_ENV__S_CLANDRO_APP@SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME"
+clandro_core__tests__copy_variable CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME "$CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME___N" || return $?
+[[ -z "$CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME" ]] && \
+CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME="@CLANDRO_APP__SHELL_API__SHELL_API_ACTIVITY__CLASS_NAME@"
+
+CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME___N="@CLANDRO_ENV__S_CLANDRO_APP@SHELL_API__SHELL_API_SERVICE__CLASS_NAME"
+clandro_core__tests__copy_variable CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME "$CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME___N" || return $?
+[[ -z "$CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME" ]] && \
+CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME="@CLANDRO_APP__SHELL_API__SHELL_API_SERVICE__CLASS_NAME@"
+
+
+CLANDRO__ROOTFS___N="@CLANDRO_ENV__S_CLANDRO@ROOTFS"
+clandro_core__tests__copy_variable CLANDRO__ROOTFS "$CLANDRO__ROOTFS___N" || return $?
+[[ ! "$CLANDRO__ROOTFS" =~ $CLANDRO_CORE__TESTS__REGEX__ROOTFS_OR_ABSOLUTE_PATH ]] && \
+CLANDRO__ROOTFS="@CLANDRO__ROOTFS@"
+
+CLANDRO__HOME___N="@CLANDRO_ENV__S_CLANDRO@HOME"
+clandro_core__tests__copy_variable CLANDRO__HOME "$CLANDRO__HOME___N" || return $?
+[[ ! "$CLANDRO__HOME" =~ $CLANDRO_CORE__TESTS__REGEX__ABSOLUTE_PATH ]] && \
+CLANDRO__HOME="@CLANDRO__HOME@"
+
+CLANDRO__PREFIX___N="@CLANDRO_ENV__S_CLANDRO@PREFIX"
+clandro_core__tests__copy_variable CLANDRO__PREFIX "$CLANDRO__PREFIX___N" || return $?
+[[ ! "$CLANDRO__PREFIX" =~ $CLANDRO_CORE__TESTS__REGEX__ABSOLUTE_PATH ]] && \
+CLANDRO__PREFIX="@CLANDRO__PREFIX@"
+
+
+CLANDRO_EXEC__TESTS__LOG_LEVEL___N="@CLANDRO_ENV__S_CLANDRO_EXEC__TESTS@LOG_LEVEL"
+clandro_core__tests__copy_variable CLANDRO_EXEC__TESTS__LOG_LEVEL "$CLANDRO_EXEC__TESTS__LOG_LEVEL___N" || return $?
+
+
+CLANDRO_CORE__TESTS__TESTS_PATH___N="@CLANDRO_ENV__S_CLANDRO_CORE__TESTS@TESTS_PATH"
+CLANDRO_CORE__TESTS__TESTS_PATH="$CLANDRO__PREFIX/libexec/installed-tests/clandro-core"
+printf -v "$CLANDRO_CORE__TESTS__TESTS_PATH___N" "%s" "$CLANDRO_CORE__TESTS__TESTS_PATH" || return $?
+export "${CLANDRO_CORE__TESTS__TESTS_PATH___N?}" || return $?
+
+
+CLANDRO__USER_ID___N="@CLANDRO_ENV__S_CLANDRO@USER_ID"
+clandro_core__tests__copy_variable CLANDRO__USER_ID "$CLANDRO__USER_ID___N" || return $?
+CLANDRO__USER_ID="${CLANDRO__USER_ID:-0}"
+
+
+CLANDRO_CORE__APPS_INFO_ENV_FILE___N="@CLANDRO_ENV__S_CLANDRO_CORE@APPS_INFO_ENV_FILE"
+clandro_core__tests__copy_variable CLANDRO_CORE__APPS_INFO_ENV_FILE "$CLANDRO_CORE__APPS_INFO_ENV_FILE___N" || return $?
+
+
+
+# Set exit traps.
+clandro_core__tests__set_traps || return $?
+
+}
+
+
+
+function clandro_core__tests__log() { local log_level="${1}"; shift; if [[ $CLANDRO_CORE__TESTS__LOG_LEVEL -ge $log_level ]]; then echo "${CLANDRO_CORE__TESTS__LOG_TAG:-"@CLANDRO__LNAME@-core.tests"}:" "$@"; fi }
+function clandro_core__tests__log_literal() { local log_level="${1}"; shift; if [[ $CLANDRO_CORE__TESTS__LOG_LEVEL -ge $log_level ]]; then echo -e "${CLANDRO_CORE__TESTS__LOG_TAG:-"@CLANDRO__LNAME@-core.tests"}:" "$@"; fi }
+function clandro_core__tests__log_error() { echo "${CLANDRO_CORE__TESTS__LOG_TAG:-"@CLANDRO__LNAME@-core.tests"}:" "$@" 1>&2; }
+
+
+##
+# `clandro_core__tests__main` [`<argument...>`]
+##
+clandro_core__tests__main() {
+
+    local return_value
+
+    clandro_core__tests__init || return $?
+
+    CLANDRO_CORE__TESTS__RUN_UNIT_TESTS="false"
+    CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS="false"
+
+    # Process the command arguments passed to the script.
+    clandro_core__tests__process_script_arguments "$@" || return $?
+    if [ "$CLANDRO_CORE__TESTS__COMMAND_TYPE_NOOP" = "true" ]; then return 0; fi
+
+
+    clandro_core__tests__log 4 "Running 'clandro_core__tests__main'"
+
+    if [[ "$CLANDRO_CORE__TESTS__COMMAND_TYPE_ID" == *,* ]] || \
+            [[ ",unit,runtime,all," != *",$CLANDRO_CORE__TESTS__COMMAND_TYPE_ID,"* ]]; then
+        clandro_core__tests__log_error "Invalid command type id '$CLANDRO_CORE__TESTS__COMMAND_TYPE_ID' passed. Must equal 'unit', 'runtime' or 'all'."
+        return 1
+    fi
+
+
+    clandro_core__tests__log 1 "Running 'clandro-core' tests"
+
+    local tests_start_time; tests_start_time="$(date "+%s")" || return $?
+
+    [[ ",unit,all," == *",$CLANDRO_CORE__TESTS__COMMAND_TYPE_ID,"* ]] && CLANDRO_CORE__TESTS__RUN_UNIT_TESTS="true"
+    [[ ",runtime,all," == *",$CLANDRO_CORE__TESTS__COMMAND_TYPE_ID,"* ]] && CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS="true"
+
+    clandro_core__tests__log 5 "$CLANDRO_CORE__TESTS__LOG_LEVEL___N='$CLANDRO_CORE__TESTS__LOG_LEVEL'"
+    [[ -n "$CLANDRO_CORE__TESTS__TEST_NAMES_FILTER" ]] && clandro_core__tests__log 5 "$CLANDRO_CORE__TESTS__TEST_NAMES_FILTER='$CLANDRO_CORE__TESTS__TEST_NAMES_FILTER'"
+    clandro_core__tests__log 5 "$CLANDRO_CORE__TESTS__TESTS_PATH___N='$CLANDRO_CORE__TESTS__TESTS_PATH'"
+    clandro_core__tests__log 5 "$CLANDRO__USER_ID___N='$CLANDRO__USER_ID'"
+
+
+    # Set `CLANDRO_CORE__TESTS__TESTS_PATH.
+    if [[ ! "$CLANDRO_CORE__TESTS__TESTS_PATH" =~ $CLANDRO_CORE__TESTS__REGEX__ROOTFS_OR_ABSOLUTE_PATH ]]; then
+        clandro_core__tests__log_error "The CLANDRO_CORE__TESTS__TESTS_PATH '$CLANDRO_CORE__TESTS__TESTS_PATH' is either not set or is not an absolute path"
+        return 1
+    fi
+
+
+    CLANDRO_CORE__TESTS__IS_RUNNING_ON_ANDROID="false"
+    CLANDRO_CORE__TESTS__IS_RUNNING_IN_CLANDRO="false"
+    if [ -f "/system/bin/app_process" ]; then
+        CLANDRO_CORE__TESTS__IS_RUNNING_ON_ANDROID="true"
+        [ -x "$CLANDRO__ROOTFS" ] && CLANDRO_CORE__TESTS__IS_RUNNING_IN_CLANDRO="true"
+    fi
+
+
+    # Setup variables for runtime tests.
+    if [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" == "true" ]]; then
+        if [[ "$CLANDRO_CORE__TESTS__IS_RUNNING_IN_CLANDRO" != "true" ]]; then
+            clandro_core__tests__log_error "The CLANDRO__ROOTFS '$CLANDRO__ROOTFS' path not found or is not executable. "
+            clandro_core__tests__log_error "Runtime tests must be run from $CLANDRO_APP__NAME app in Android."
+            return 1
+        fi
+
+
+        if [[ ! "$CLANDRO__USER_ID" =~ ^(([0-9])|([1-9][0-9]{0,2}))$ ]]; then
+            clandro_core__tests__log_error "The CLANDRO__USER_ID '$CLANDRO__USER_ID' is not set to a valid user id."
+            return 1
+        fi
+
+
+        CLANDRO_CORE__TESTS__UID="$(id -u)"
+        return_value=$?
+        if [ $return_value -ne 0 ]; then
+            clandro_core__tests__log_error "Failed to get uid"
+            return $return_value
+        fi
+
+
+        ANDROID__BUILD_VERSION_SDK="$(getprop "ro.build.version.sdk")"
+        if [[ ! "$ANDROID__BUILD_VERSION_SDK" =~ $CLANDRO_CORE__TESTS__REGEX__UNSIGNED_INT ]]; then
+            clandro_core__tests__log_error "Failed to get android build version sdk with getprop"
+            return 1
+        fi
+
+
+        if [[ ! -d "$TMPDIR" ]]; then
+            clandro_core__tests__log_error "The TMPDIR '$TMPDIR' is either not set or not a directory"
+            return 1
+        fi
+
+
+        CLANDRO_CORE__TESTS__TMPDIR_PATH="$TMPDIR/clandro-core-tests"
+
+        # Ensure test directory is clean and does not contain files from previous run.
+        rm -rf "$CLANDRO_CORE__TESTS__TMPDIR_PATH" || return $?
+        mkdir -p "$CLANDRO_CORE__TESTS__TMPDIR_PATH" || return $?
+
+        # Setup temp directory for exec tests.
+        # DO NOT modify unless its ensured that no test requires the specified directory hierarchy.
+        CLANDRO_CORE__TESTS__EXEC_TMPDIR_PATH="$CLANDRO_CORE__TESTS__TMPDIR_PATH/exec"
+        mkdir -p "$CLANDRO_CORE__TESTS__EXEC_TMPDIR_PATH" || return $?
+
+        CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_NAME="test-script"
+        CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH="$CLANDRO_CORE__TESTS__EXEC_TMPDIR_PATH/$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_NAME"
+    fi
+
+
+
+    # Run tests.
+    if [[ "clandro-core" =~ $CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER ]]; then
+        clandro_core__libclandro_core__nos__c__tests__run_command || return $?
+        clandro_core__clandro_core_main_app__tests__run_command || return $?
+    fi
+
+    clandro_core__clandro_external_packages__tests__run_command || return $?
+
+
+
+    clandro_core__tests__log 1 "All 'clandro-core' tests successful in \
+$(clandro_core__tests__print_elapsed_time "$tests_start_time")"
+
+    return 0
+
+}
+
+
+
+##
+# `clandro_core__libclandro_core__nos__c__tests__run_command`
+##
+clandro_core__libclandro_core__nos__c__tests__run_command() {
+
+    local return_value
+
+    local tests_start_time; tests_start_time="$(date "+%s")" || return $?
+
+    clandro_core__tests__log 1 "Running 'libclandro-core_nos_c_tre_tests'"
+
+    (
+        # shellcheck source=lib/clandro-core_nos_c/tre/tests/libclandro-core_nos_c_tre_tests.in
+        clandro_core__tests__source_file_from_path \
+            "$CLANDRO_CORE__TESTS__TESTS_PATH/lib/clandro-core_nos_c/tre/libclandro-core_nos_c_tre_tests" || exit $?
+
+        libclandro_core__nos__c__tests__main
+    )
+    return_value=$?
+    if [ $return_value -ne 0 ]; then
+        clandro_core__tests__log_error "'libclandro-core_nos_c_tre_tests' failed"
+        return $return_value
+    fi
+
+    clandro_core__tests__log 2 "'libclandro-core_nos_c_tre_tests' completed in \
+$(clandro_core__tests__print_elapsed_time "$tests_start_time")"
+
+    return 0
+
+}
+
+
+
+##
+# `clandro_core__clandro_core_main_app__tests__run_command`
+##
+clandro_core__clandro_core_main_app__tests__run_command() {
+
+    local return_value
+
+    local tests_start_time; tests_start_time="$(date "+%s")" || return $?
+
+    clandro_core__tests__log 1 "Running 'clandro-core-main-app_tests'"
+
+    (
+        # shellcheck source=app/main/tests/clandro-core-main-app_tests.in
+        clandro_core__tests__source_file_from_path \
+            "$CLANDRO_CORE__TESTS__TESTS_PATH/app/main/clandro-core-main-app_tests" || exit $?
+
+        clandro_core_main_app__tests__main
+    )
+    return_value=$?
+    if [ $return_value -ne 0 ]; then
+        clandro_core__tests__log_error "'clandro-core-main-app_tests' failed"
+        return $return_value
+    fi
+
+    clandro_core__tests__log 2 "'clandro-core-main-app_tests' completed in \
+$(clandro_core__tests__print_elapsed_time "$tests_start_time")"
+
+    return 0
+
+}
+
+
+
+##
+# `clandro_core__clandro_external_packages__tests__run_command`
+##
+clandro_core__clandro_external_packages__tests__run_command() {
+
+    local return_value
+
+    local tests_start_time; tests_start_time="$(date "+%s")" || return $?
+
+    clandro_core__tests__log 1 "Running 'clandro-external-packages_tests'"
+
+    (
+        # shellcheck source=app/main/tests/clandro-external-packages_tests.in
+        clandro_core__tests__source_file_from_path \
+            "$CLANDRO_CORE__TESTS__TESTS_PATH/app/main/clandro-external-packages_tests" || exit $?
+
+        clandro_external_packages__tests__main
+    )
+    return_value=$?
+    if [ $return_value -ne 0 ]; then
+        clandro_core__tests__log_error "'clandro-external-packages_tests' failed"
+        return $return_value
+    fi
+
+    clandro_core__tests__log 2 "'clandro-external-packages_tests' completed in \
+$(clandro_core__tests__print_elapsed_time "$tests_start_time")"
+
+    return 0
+
+}
+
+
+
+
+
+##
+# `clandro_core__tests__run_script_test` `<test_name>` [`<command_options...>`] \
+#   `<test_file_content>`
+#   `<expected_exit_code>` `<expected_output_regex>` \
+#   [`<script_args...>`]
+##
+clandro_core__tests__run_script_test() {
+
+    local return_value
+
+    local opt; local opt_arg; local OPTARG; local OPTIND;
+
+    local test_file_set_executable="true"
+    local working_directory="."
+    local execution_path=""
+
+    if [[ $# -lt 1 ]]; then
+        clandro_core__tests__log_error "Invalid argument count $#. The 'clandro_core__tests__run_script_test' command expects at least 1 argument: \
+ test_name"
+        return 1
+    fi
+
+    local test_name="$1"
+    shift 1
+
+    clandro_core__tests__log 5 "$test_name()"
+
+    # Parse options to main command.
+    while getopts ":-:" opt; do
+        opt_arg="${OPTARG:-}"
+        case "${opt}" in
+            -)
+                case "${OPTARG}" in *?=*) opt_arg="${OPTARG#*=}";; *) opt_arg="";; esac
+                case "${OPTARG}" in
+                    no-test-file-set-executable)
+                        test_file_set_executable="false"
+                        ;;
+                    working-dir=?*)
+                        working_directory="$opt_arg"
+                        ;;
+                    working-dir | working-dir=)
+                        clandro_core__tests__log_error "No argument set for arg option '--${OPTARG%=*}'."
+                        return 64 # EX__USAGE
+                        ;;
+                    executable-path=?*)
+                        execution_path="$opt_arg"
+                        ;;
+                    executable-path | executable-path=)
+                        clandro_core__tests__log_error "No argument set for arg option '--${OPTARG%=*}'."
+                        return 64 # EX__USAGE
+                        ;;
+                    '')
+                        # End of options `--`.
+                        break
+                        ;;
+                    *)
+                        clandro_core__tests__log_error "Unknown option: '--${OPTARG:-}'."
+                        return 64 # EX__USAGE
+                        ;;
+                esac
+                ;;
+            \?)
+                :;;
+        esac
+    done
+    shift $((OPTIND - 1)) # Remove already processed arguments from argument list
+
+
+
+    if [[ $# -lt 3 ]]; then
+        clandro_core__tests__log_error "Invalid argument count $#. The 'clandro_core__tests__run_script_test' command expects at least 4 arguments: \
+ test_name test_file_content expected_exit_code expected_output_regex [script_args]"
+        return 1
+    fi
+
+    local test_file_content="$1"
+    local expected_exit_code="$2"
+    local expected_output_regex="$3"
+    shift 3 # Remove args before `script_args`
+
+    local output
+    local actual_output
+    local test_failed="false"
+
+    if [[ -n "${CLANDRO_CORE__TESTS__TEST_NAMES_FILTER:-}" ]] && [[ ! "$test_name" =~ $CLANDRO_CORE__TESTS__TEST_NAMES_FILTER ]]; then
+        return 0
+    fi
+
+    if [[ "${CLANDRO_CORE__TESTS__TESTS_COUNT:-}" =~ $CLANDRO_CORE__TESTS__REGEX__UNSIGNED_INT ]]; then
+        CLANDRO_CORE__TESTS__TESTS_COUNT=$((CLANDRO_CORE__TESTS__TESTS_COUNT + 1))
+    fi
+
+    clandro_core__tests__log 5 "test_file_path='$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH'"
+    if [[ "$test_file_content" == *"${NL}"* ]]; then
+        clandro_core__tests__log 5 "test_file_content=${NL}"'```'"${NL}$test_file_content${NL}"'```'
+    else
+        clandro_core__tests__log 5 "test_file_content='$test_file_content'"
+    fi
+
+    if [[ "$test_file_set_executable" != "true" ]]; then
+        clandro_core__tests__log 5 "test_file_set_executable='$test_file_set_executable'"
+    fi
+    if [[ "$working_directory" != "." ]]; then
+        clandro_core__tests__log 5 "working_directory='$working_directory'"
+    fi
+    if [[ -n "$execution_path" ]]; then
+        clandro_core__tests__log 5 "execution_path='$execution_path'"
+    fi
+
+    clandro_core__tests__log 5 "expected_exit_code='$expected_exit_code'"
+    clandro_core__tests__log 5 "expected_output_regex='$expected_output_regex'"
+
+    # If CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH is not a valid absolute path.
+    if [[ ! "$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH" =~ $CLANDRO_CORE__TESTS__REGEX__ABSOLUTE_PATH ]]; then
+        clandro_core__tests__log_error "The CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH '$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH' is not a valid absolute path"
+        return 1
+    fi
+
+    rm -f "$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH" || return $?
+
+    output="$(printf "%s" "$test_file_content" > "$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH" 2>&1)"
+    return_value=$?
+    if [ $return_value -ne 0 ]; then
+        printf "%s\n" "$output" 1>&2
+        clandro_core__tests__log_error "Failed to create the '$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH' file for the '$test_name' test"
+        return $return_value
+    fi
+
+    if [[ "$test_file_set_executable" == "true" ]]; then
+        output="$(chmod +x "$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH" 2>&1)"
+        return_value=$?
+        if [ $return_value -ne 0 ]; then
+            printf "%s\n" "$output" 1>&2
+            clandro_core__tests__log_error "Failed to set the executable bit for the '$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH' file for the '$test_name' test"
+            return $return_value
+        fi
+    fi
+
+    actual_output="$(cd "$working_directory" && "${execution_path:-$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH}" "$@" 2>&1)"
+    actual_exit_code=$?
+    if [[ -n "$expected_output_regex" ]] && [[ ! "$actual_output" =~ $expected_output_regex ]]; then
+        clandro_core__tests__log_error "FAILED: '$test_name' test"
+        clandro_core__tests__log_error "Expected output_regex does not equal match actual output"
+        test_failed="true"
+    elif [ $actual_exit_code != "$expected_exit_code" ]; then
+        clandro_core__tests__log_error "$actual_output"
+        clandro_core__tests__log_error "FAILED: '$test_name' test"
+        clandro_core__tests__log_error "Expected result_code does not equal actual result_code"
+        test_failed="true"
+    fi
+
+    if [[ "$test_failed" == "true" ]]; then
+        if [[ "$test_file_content" == *"${NL}"* ]]; then
+            clandro_core__tests__log_error "test_file_content=${NL}"'```'"${NL}$test_file_content${NL}"'```'
+        else
+            clandro_core__tests__log_error "test_file_content='$test_file_content'"
+        fi
+        clandro_core__tests__log_error "actual_exit_code: '$actual_exit_code'"
+        clandro_core__tests__log_error "expected_exit_code: '$expected_exit_code'"
+        clandro_core__tests__log_error "actual_output: '$actual_output'"
+        clandro_core__tests__log_error "expected_output_regex: '$expected_output_regex'"
+        return 100
+    else
+        #clandro_core__tests__log 2 "PASSED"
+
+        # Remove test file so that later tests do not accidentally use it.
+        rm -f "$CLANDRO_CORE__TESTS__SCRIPT_TEST_FILE_PATH" || return $?
+
+        if [[ "$CLANDRO_CORE__TESTS__LOG_EMPTY_LINE_AFTER_SCRIPT_TEST" == "true" ]]; then
+            clandro_core__tests__log 5 ""
+        fi
+
+        return 0
+    fi
+
+}
+
+
+
+
+
+##
+# `get_export_scoped_variable_command` `<output_variable_name>` \
+#     `<var_root_scope_name>` `<var_sub_scope_name>` `<var_sub_name>` \
+#     `<var_value>`
+##
+get_export_scoped_variable_command() {
+
+    clandro_core__tests__validate_argument_count eq $# 5 get_export_scoped_variable_command "$@" || return $?
+
+    local output_variable_name="$1"
+    local var_root_scope_name="$2"
+    local var_sub_scope_name="$3"
+    local var_sub_name="$4"
+    local var_value="$5"
+
+    printf -v "$output_variable_name" "%s" \
+        "export ${var_root_scope_name}${var_sub_scope_name}${var_sub_name}='${var_value//\'/\'\\\'\'}';" || return $?
+
+    return 0
+
+}
+
+##
+# `append_export_scoped_variable_command` `<output_variable_name>` \
+#     `<var_root_scope_name>` `<var_sub_scope_name>` `<var_sub_name>` \
+#     `<var_value>`
+##
+append_export_scoped_variable_command() {
+
+    clandro_core__tests__validate_argument_count eq $# 5 append_export_scoped_variable_command "$@" || return $?
+
+    local output_variable_name="$1"
+    local var_root_scope_name="$2"
+    local var_sub_scope_name="$3"
+    local var_sub_name="$4"
+    local var_value="$5"
+
+    local __command
+
+    get_export_scoped_variable_command __command "$var_root_scope_name" "$var_sub_scope_name" "$var_sub_name" "$var_value" || return $?
+
+    printf -v "$output_variable_name" "%s" \
+        "${!output_variable_name:-}${NL}${__command}" || return $?
+
+    return 0
+
+}
+
+
+
+##
+# `get_unset_scoped_variable_command` `<output_variable_name>` \
+#     `<var_root_scope_name>` `<var_sub_scope_name>` `<var_sub_name>`
+##
+get_unset_scoped_variable_command() {
+
+    clandro_core__tests__validate_argument_count eq $# 4 get_unset_scoped_variable_command "$@" || return $?
+
+    local output_variable_name="$1"
+    local var_root_scope_name="$2"
+    local var_sub_scope_name="$3"
+    local var_sub_name="$4"
+
+    printf -v "$output_variable_name" "%s" \
+        "unset ${var_root_scope_name}${var_sub_scope_name}${var_sub_name};" || return $?
+
+    return 0
+
+}
+
+##
+# `append_unset_scoped_variable_command` `<output_variable_name>` \
+#     `<var_root_scope_name>` `<var_sub_scope_name>` `<var_sub_name>`
+##
+append_unset_scoped_variable_command() {
+
+    clandro_core__tests__validate_argument_count eq $# 4 append_unset_scoped_variable_command "$@" || return $?
+
+    local output_variable_name="$1"
+    local var_root_scope_name="$2"
+    local var_sub_scope_name="$3"
+    local var_sub_name="$4"
+
+    local __command
+
+    get_unset_scoped_variable_command __command "$var_root_scope_name" "$var_sub_scope_name" "$var_sub_name" || return $?
+
+    printf -v "$output_variable_name" "%s" \
+        "${!output_variable_name:-}${NL}${__command}" || return $?
+
+    return 0
+
+}
+
+
+
+
+
+##
+# Source a file under `$PATH`, like under `CLANDRO__PREFIX/bin`.
+#
+# A separate function is used to source so that arguments passed to
+# calling script/function are not passed to the sourced script.
+#
+#
+# clandro_core__tests__source_file_from_path <file_name>
+##
+clandro_core__tests__source_file_from_path() {
+
+    local source_file="${1:-}"; [ $# -gt 0 ] && shift 1;
+
+    local source_path
+
+    if source_path="$(command -v "$source_file")" && [ -n "$source_path" ]; then
+        # shellcheck disable=SC1090
+        source "$source_path" || return $?
+    else
+        echo "Failed to find the '$source_file' file to source." 1>&2
+        return 1
+    fi
+
+}
+
+
+
+
+
+##
+# Copy the value of a variable to another variable.
+#
+#
+# **Parameters:**
+# `output_variable_name` - The name of the output variable to set.
+# `input_variable_name` - The name of the input variable to read.
+#
+# **Returns:**
+# Returns `0` if successful, otherwise returns with a non-zero exit code.
+#
+#
+# `clandro_core__tests__copy_variable` `<output_variable_name>` `<input_variable_name>`
+##
+clandro_core__tests__copy_variable() {
+
+    local output_variable_name="${1:-}"
+    local input_variable_name="${2:-}"
+
+    if [[ ! "$output_variable_name" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+        echo "The output_variable_name '$output_variable_name' is not a valid shell variable name while running 'clandro_core__tests__copy_variable'." 1>&2
+        return 1
+    fi
+
+    if [[ ! "$input_variable_name" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+        echo "The input_variable_name '$input_variable_name' is not a valid shell variable name while running 'clandro_core__tests__copy_variable'." 1>&2
+        return 1
+    fi
+
+    eval "$output_variable_name"=\"\$\{"$input_variable_name":-\}\"
+
+}
+
+
+
+
+
+##
+# Escape '\$[](){}|^.?+*' in a string with backslashes so that it can
+# be used as a literal string in regex.
+#
+#
+# `clandro_core__tests__escape_string_for_regex` `<string>`
+##
+clandro_core__tests__escape_string_for_regex() {
+
+    printf "%s" "$1" | sed -zE -e 's/[][\.|$(){}?+*^]/\\&/g'
+
+}
+
+
+
+
+
+##
+# `clandro_core__tests__get_arguments_string` `<output_variable_name>` `<arguments...>`
+##
+clandro_core__tests__get_arguments_string() {
+
+    local output_variable_name="${1:-}"
+    shift 1
+
+    local argument
+    local __arguments_string=""
+    local i=1
+
+    while [ $# -ne 0 ]; do
+        argument="$1"
+        __arguments_string="$__arguments_string$i: \`$argument\`"
+
+        if [ $# -gt 1 ]; then
+            __arguments_string="$__arguments_string$NL"
+        fi
+
+        i=$((i + 1))
+        shift
+    done
+
+    printf -v "$output_variable_name" "%s" "$__arguments_string" || return $?
+
+}
+
+##
+# `clandro_core__tests__print_arguments_string` `<arguments...>`
+##
+clandro_core__tests__print_arguments_string() {
+
+    local arguments_string=""
+    clandro_core__tests__get_arguments_string arguments_string "$@" || return $?
+     printf "%s\n" "$arguments_string"
+
+}
+
+##
+# `clandro_core__tests__validate_argument_count` `eq`|`lt`|`le`|`gt`|`ge` `<arguments_received_count>` `<arguments_actual>` `<label>` [`<arguments_received>`]
+# `clandro_core__tests__validate_argument_count` `or` `<arguments_received_count>` `<arguments_actual_1>` `<arguments_actual_2>` `<label>` [`<arguments_received>`]
+# `clandro_core__tests__validate_argument_count` `between` `<arguments_received_count>` `<arguments_actual_min>` `<arguments_actual_max>` `<label>` [`<arguments_received>`]
+##
+clandro_core__tests__validate_argument_count() {
+
+    local return_value=0
+
+    case "$1" in
+        eq) if [ "$2" -eq "$3" ]; then :; else
+                local label="$4"; case "$label" in *[!a-zA-Z0-9_-]*) :;; *) label="'$label'";;esac;
+                clandro_core__tests__log_error "Invalid argument count '$2' to $label. Expected '$3' argument(s)."; shift 4; return_value=1; fi;;
+        lt) if [ "$2" -lt "$3" ]; then :; else
+                local label="$4"; case "$label" in *[!a-zA-Z0-9_-]*) :;; *) label="'$label'";;esac;
+                clandro_core__tests__log_error "Invalid argument count '$2' to $label. Expected less than '$3' argument(s)."; shift 4; return_value=1; fi;;
+        le) if [ "$2" -le "$3" ]; then :; else
+                local label="$4"; case "$label" in *[!a-zA-Z0-9_-]*) :;; *) label="'$label'";;esac;
+                clandro_core__tests__log_error "Invalid argument count '$2' to $label. Expected less than or equal to '$3' argument(s)."; shift 4; return_value=1; fi;;
+        gt) if [ "$2" -gt "$3" ]; then :; else
+                local label="$4"; case "$label" in *[!a-zA-Z0-9_-]*) :;; *) label="'$label'";;esac;
+                clandro_core__tests__log_error "Invalid argument count '$2' to $label. Expected greater than '$3' argument(s)."; shift 4; return_value=1; fi;;
+        ge) if [ "$2" -ge "$3" ]; then :; else
+                local label="$4"; case "$label" in *[!a-zA-Z0-9_-]*) :;; *) label="'$label'";;esac;
+                clandro_core__tests__log_error "Invalid argument count '$2' to $label. Expected greater than or equal to '$3' argument(s)."; shift 4; return_value=1; fi;;
+        or) if [ "$2" -eq "$3" ] || [ "$2" -eq "$4" ]; then :; else
+                local label="$5"; case "$label" in *[!a-zA-Z0-9_-]*) :;; *) label="'$label'";;esac;
+                clandro_core__tests__log_error "Invalid argument count '$2' to $label. Expected '$3' or '$4' argument(s)."; shift 5; return_value=1; fi;;
+        between) if [ "$2" -ge "$3" ] && [ "$2" -le "$4" ]; then :; else
+                local label="$5"; case "$label" in *[!a-zA-Z0-9_-]*) :;; *) label="'$label'";;esac;
+                clandro_core__tests__log_error "Invalid argument count '$2' to $label. Expected between '$3' and '$4' (inclusive) argument(s)."; shift 5; return_value=1; fi;;
+        *)
+            clandro_core__tests__log_error "The comparison '$1' while running 'clandro_core__tests__validate_argument_count' is invalid"; return 1;;
+    esac
+
+    [ $return_value -eq 0 ] && return 0
+
+    if [ $# -gt 0 ]; then
+        clandro_core__tests__print_arguments_string "$@" || return $?
+    fi
+
+    return $return_value
+
+}
+
+
+
+##
+# `clandro_core__tests__print_elapsed_time` `<start_time>`
+##
+clandro_core__tests__print_elapsed_time() {
+
+    local start_time="$1"
+
+    local end_time
+
+    end_time=$(($(date "+%s") - start_time)) || return $?
+
+    printf "%s" "$((end_time / 3600 )) hours $(((end_time % 3600) / 60)) minutes $((end_time % 60)) seconds"
+
+}
+
+
+
+
+
+##
+# Set exit traps to `clandro_core__tests__traps()`.
+##
+clandro_core__tests__set_traps() {
+
+    # Set traps to `clandro_core__tests__traps`.
+    trap 'clandro_core__tests__traps' EXIT
+    trap 'clandro_core__tests__traps TERM' TERM
+    trap 'clandro_core__tests__traps INT' INT
+    trap 'clandro_core__tests__traps HUP' HUP
+    trap 'clandro_core__tests__traps QUIT' QUIT
+
+    return 0
+
+}
+
+clandro_core__tests__traps_killtree() {
+
+    local signal="$1"; local pid="$2"; local cpid
+    for cpid in $(pgrep -P "$pid"); do clandro_core__tests__traps_killtree "$signal" "$cpid"; done
+    [[ "$pid" != "$$" ]] && signal="${signal:=15}"; kill "-$signal" "$pid" 2>/dev/null
+
+}
+
+clandro_core__tests__traps() {
+
+    local exit_code=$?
+    trap - EXIT
+
+    if [[ "${CLANDRO_CORE__TESTS__TMPDIR_PATH:-}" =~ ^(/[^/]+)+$ ]] && [[ "$CLANDRO_CORE__TESTS__NO_CLEAN" != "true" ]]; then
+        rm -rf "$CLANDRO_CORE__TESTS__TMPDIR_PATH"
+    fi
+
+    [ -n "${1:-}" ] && trap - "$1";
+    clandro_core__tests__traps_killtree "${1:-}" $$;
+    exit $exit_code
+
+}
+
+
+
+
+
+##
+# `clandro_core__tests__process_script_arguments` [`<argument...>`]
+##
+clandro_core__tests__process_script_arguments() {
+
+    local opt; local opt_arg; local OPTARG; local OPTIND;
+
+    if [ $# -eq 0 ]; then
+        CLANDRO_CORE__TESTS__COMMAND_TYPE_NOOP="true"
+        show_help; return $?
+    fi
+
+    # Parse options to main command.
+    while getopts ":hqvfl-:" opt; do
+        opt_arg="${OPTARG:-}"
+        case "${opt}" in
+            -)
+                case "${OPTARG}" in *?=*) opt_arg="${OPTARG#*=}";; *) opt_arg="";; esac
+                case "${OPTARG}" in
+                    help)
+                        CLANDRO_CORE__TESTS__COMMAND_TYPE_NOOP="true"
+                        show_help; return $?
+                        ;;
+                    version)
+                        CLANDRO_CORE__TESTS__COMMAND_TYPE_NOOP="true"
+                        echo "clandro-core-tests version=@CLANDRO_CORE_PKG__VERSION@ org=@CLANDRO__REPOS_HOST_ORG_NAME@ project=clandro-core-package"; return $?
+                        ;;
+                    quiet)
+                        CLANDRO_CORE__TESTS__LOG_LEVEL=0
+                        ;;
+                    no-clean)
+                        CLANDRO_CORE__TESTS__NO_CLEAN="true"
+                        ;;
+                    only-clandro-core-tests)
+                        CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER="^clandro-core$"
+                        ;;
+                    skip-clandro-core-env-variable-tests)
+                        CLANDRO_CORE__TESTS__SKIP_CLANDRO_CORE_ENV_VARIABLE_TESTS="true"
+                        ;;
+                    test-names-filter=?*)
+                        CLANDRO_CORE__TESTS__TEST_NAMES_FILTER="$opt_arg" || return $?
+                        ;;
+                    test-names-filter | test-names-filter=)
+                        clandro_core__tests__log_error "No argument set for arg option '--${OPTARG%=*}'."
+                        return 64 # EX__USAGE
+                        ;;
+                    test-packages-filter=?*)
+                        CLANDRO_CORE__TESTS__TEST_PACKAGES_FILTER="$opt_arg" || return $?
+                        ;;
+                    test-packages-filter | test-packages-filter=)
+                        clandro_core__tests__log_error "No argument set for arg option '--${OPTARG%=*}'."
+                        return 64 # EX__USAGE
+                        ;;
+                    tests-path=?*)
+                        CLANDRO_CORE__TESTS__TESTS_PATH="$(readlink -f -- "$opt_arg")" || return $?
+                        ;;
+                    tests-path | tests-path=)
+                        clandro_core__tests__log_error "No argument set for arg option '--${OPTARG%=*}'."
+                        return 64 # EX__USAGE
+                        ;;
+                    '')
+                        # End of options `--`.
+                        break
+                        ;;
+                    *)
+                        clandro_core__tests__log_error "Unknown option: '--${OPTARG:-}'."
+                        return 64 # EX__USAGE
+                        ;;
+                esac
+                ;;
+            h)
+                CLANDRO_CORE__TESTS__COMMAND_TYPE_NOOP="true"
+                show_help; return $?
+                ;;
+            q)
+                CLANDRO_CORE__TESTS__LOG_LEVEL=0
+                ;;
+            v)
+                if [ "$CLANDRO_CORE__TESTS__LOG_LEVEL" -lt "$CLANDRO_CORE__TESTS__MAX_LOG_LEVEL" ]; then
+                    CLANDRO_CORE__TESTS__LOG_LEVEL=$((CLANDRO_CORE__TESTS__LOG_LEVEL+1));
+                else
+                    clandro_core__tests__log_error "Invalid option, max log level is $CLANDRO_CORE__TESTS__MAX_LOG_LEVEL."
+                    return 64 # EX__USAGE
+                fi
+                ;;
+            f)
+                CLANDRO_CORE__TESTS__USE_FSANITIZE_BUILDS="true"
+                ;;
+            l)
+                CLANDRO_CORE__TESTS__DETECT_LEAKS=1
+                ;;
+            \?)
+                :;;
+        esac
+    done
+    shift $((OPTIND - 1)) # Remove already processed arguments from argument list
+
+    if [ $# -eq 0 ]; then
+        clandro_core__tests__log_error "The command type not passed."
+        return 64 # EX__USAGE
+    elif [ $# -ne 1 ]; then
+        clandro_core__tests__log_error "Expected 1 argument for command type but passed: $*"
+        return 64 # EX__USAGE
+    fi
+
+    CLANDRO_CORE__TESTS__COMMAND_TYPE_ID="$1"
+
+    return 0;
+
+}
+
+##
+# `show_help`
+##
+show_help() {
+
+    cat <<'HELP_EOF'
+clandro-core-tests can be used to run tests for 'clandro-core' and
+other external Clandro packages.
+
+
+Usage:
+    clandro-core-tests [command_options] <command>
+
+Available commands:
+    unit                      Run unit tests.
+    runtime                   Run runtime on-device tests.
+    all                       Run all tests.
+
+Available command_options:
+    [ -h | --help ]           Display this help screen.
+    [ --version ]             Display version.
+    [ -q | --quiet ]          Set log level to 'OFF'.
+    [ -v | -vv | -vvv | -vvvvv ]
+                              Set log level to 'DEBUG', 'VERBOSE',
+                              'VVERBOSE' and 'VVVERBOSE'.
+    [ -f ]                    Use fsanitize binaries for AddressSanitizer.
+    [ -l ]                    Detect memory leaks with LeakSanitizer.
+                              Requires '-f' to be passed.
+    [ --no-clean ]            Do not clean test files on failure.
+    [ --only-clandro-core-tests ]
+                              Only run 'clandro-core' package tests.
+    [ --skip-clandro-core-env-variable-tests ]
+                              Skip 'clandro-core' package tests for
+                              Clandro scoped environment variables.
+    [ --test-names-filter=<filter> ]
+                              Regex to filter which tests to run by
+                              test name.
+    [ --test-packages-filter=<filter> ]
+                              Regex to filter which tests to run by
+                              package names. By default tests for
+                              both 'clandro-core' and external Clandro
+                              packages are run.
+    [ --tests-path=<path> ]   The path to installed-tests directory.
+HELP_EOF
+
+}
+
+# If script is sourced, return with success, otherwise call main function.
+# - https://stackoverflow.com/a/28776166/14686958
+# - https://stackoverflow.com/a/29835459/14686958
+if (return 0 2>/dev/null); then
+    return 0 # EX__SUCCESS
+else
+    clandro_core__tests__main "$@"
+    exit $?
+fi

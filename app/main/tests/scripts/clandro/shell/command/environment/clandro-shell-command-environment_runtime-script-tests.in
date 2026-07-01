@@ -1,0 +1,103 @@
+#!@CLANDRO__PREFIX@/bin/bash
+# shellcheck shell=bash
+
+##
+# `ClandroShellCommandEnvioronment_runTests`
+##
+ClandroShellCommandEnvioronment_runTests() {
+
+    clandro_core__tests__log 3 "ClandroShellCommandEnvioronment_runTests()"
+
+    if [[ "$CLANDRO_CORE__TESTS__SKIP_CLANDRO_CORE_ENV_VARIABLE_TESTS" != "true" ]]; then
+        local tests_start_time; tests_start_time="$(date "+%s")" || return $?
+
+        local tests_count__old_value="$CLANDRO_CORE__TESTS__TESTS_COUNT"
+        CLANDRO_CORE__TESTS__TESTS_COUNT="0"
+
+        test__clandro_scoped_env_variable || return $?
+        test__clandro_apps_info_env_variable || return $?
+        test__clandro_apps_info_app_version_name || return $?
+
+        clandro_core__tests__log 3 "All $CLANDRO_CORE__TESTS__TESTS_COUNT 'clandro_scooed_env' tests successful in \
+$(clandro_core__tests__print_elapsed_time "$tests_start_time")"
+
+        CLANDRO_CORE__TESTS__TESTS_COUNT="$((tests_count__old_value + CLANDRO_CORE__TESTS__TESTS_COUNT))"
+    fi
+
+    return 0
+}
+
+
+
+
+
+##
+# `test__clandro_scoped_env_variable`
+##
+test__clandro_scoped_env_variable() {
+
+    (
+        # shellcheck source=app/main/tests/scripts/clandro/shell/command/environment/clandro-scoped-env-variable_runtime-script-tests.in
+        clandro_core__tests__source_file_from_path \
+            "$CLANDRO_CORE__TESTS__TESTS_PATH/app/main/scripts/clandro/shell/command/environment/clandro-scoped-env-variable_runtime-script-tests" || exit $?
+        clandro_core__clandro_scoped_env_variable__run_tests || exit $?
+    ) || return $?
+
+    return 0
+
+}
+
+##
+# `test__clandro_apps_info_env_variable`
+##
+test__clandro_apps_info_env_variable() {
+
+    (
+        # shellcheck source=app/main/tests/scripts/clandro/shell/command/environment/clandro-apps-info-env-variable_runtime-script-tests.in
+        clandro_core__tests__source_file_from_path \
+            "$CLANDRO_CORE__TESTS__TESTS_PATH/app/main/scripts/clandro/shell/command/environment/clandro-apps-info-env-variable_runtime-script-tests" || exit $?
+        clandro_core__clandro_apps_info_env_variable__run_tests || exit $?
+    ) || return $?
+
+    return 0
+
+}
+
+##
+# `test__clandro_apps_info_app_version_name`
+##
+test__clandro_apps_info_app_version_name() {
+
+    (
+        # shellcheck source=app/main/tests/scripts/clandro/shell/command/environment/clandro-apps-info-app-version-name_runtime-script-tests.in
+        clandro_core__tests__source_file_from_path \
+            "$CLANDRO_CORE__TESTS__TESTS_PATH/app/main/scripts/clandro/shell/command/environment/clandro-apps-info-app-version-name_runtime-script-tests" || exit $?
+        clandro_core__clandro_apps_info_app_version_name__run_tests || exit $?
+    ) || return $?
+
+    return 0
+
+}
+
+
+clandro_core__set_clandro_core_test_scoped_env_variables__default() {
+
+    CLANDRO_CORE__TESTS__CLANDRO_ENV__S_ROOT="$CLANDRO_ENV__S_ROOT"
+    CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME="$CLANDRO_APP__PACKAGE_NAME"
+    CLANDRO_CORE__TESTS__CLANDRO_APP__DATA_DIR="$CLANDRO_APP__DATA_DIR"
+    CLANDRO_CORE__TESTS__CLANDRO__ROOTFS="$CLANDRO__ROOTFS"
+    CLANDRO_CORE__TESTS__CLANDRO__HOME="$CLANDRO__HOME"
+    CLANDRO_CORE__TESTS__CLANDRO__PREFIX="$CLANDRO__PREFIX"
+
+}
+
+clandro_core__set_clandro_core_test_scoped_env_variables__foo() {
+
+    CLANDRO_CORE__TESTS__CLANDRO_ENV__S_ROOT="FOO_"
+    CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME="com.foo"
+    CLANDRO_CORE__TESTS__CLANDRO_APP__DATA_DIR="/data/data/com.foo"
+    CLANDRO_CORE__TESTS__CLANDRO__ROOTFS="$CLANDRO_CORE__TESTS__CLANDRO_APP__DATA_DIR/clandro/rootfs/0"
+    CLANDRO_CORE__TESTS__CLANDRO__HOME="$CLANDRO_CORE__TESTS__CLANDRO__ROOTFS/home"
+    CLANDRO_CORE__TESTS__CLANDRO__PREFIX="$CLANDRO_CORE__TESTS__CLANDRO__ROOTFS/usr"
+
+}

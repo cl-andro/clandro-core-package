@@ -1,0 +1,75 @@
+#!@CLANDRO__PREFIX@/bin/bash
+# shellcheck shell=bash
+
+##
+# `clandro_core_main_app__tests__main`
+##
+clandro_core_main_app__tests__main() {
+
+    CLANDRO_CORE__TESTS__LOG_TAG="@CLANDRO__LNAME@-core-main-app.tests"
+
+    clandro_core__tests__log 4 "main()"
+
+    # Set `CLANDRO_CORE__TESTS__TESTS_PATH` used by compiled c tests.
+    if [[ ! "$CLANDRO_CORE__TESTS__TESTS_PATH" =~ $CLANDRO_CORE__TESTS__REGEX__ROOTFS_OR_ABSOLUTE_PATH ]]; then
+        clandro_core__tests__log_error "The CLANDRO_CORE__TESTS__TESTS_PATH '$CLANDRO_CORE__TESTS__TESTS_PATH' is either not set or is not an absolute path"
+        return 1
+    fi
+
+
+    # Run runtime tests.
+    if [[ "$CLANDRO_CORE__TESTS__RUN_RUNTIME_TESTS" == "true" ]]; then
+        clandro_core_main_app__runtime_tests__run_command || return $?
+    fi
+
+    return 0
+
+}
+
+
+
+##
+# `clandro_core_main_app__runtime_tests__run_command`
+##
+clandro_core_main_app__runtime_tests__run_command() {
+
+    clandro_core__tests__log 4 "Running 'runtime' tests"
+
+    (
+        clandro_core_main_app__runtime_script_tests__run_command || exit $?
+    ) || return $?
+
+    return 0
+
+}
+
+##
+# `clandro_core_main_app__runtime_script_tests__run_command`
+##
+clandro_core_main_app__runtime_script_tests__run_command() {
+
+    local return_value
+
+    local tests_start_time; tests_start_time="$(date "+%s")" || return $?
+
+    clandro_core__tests__log 1 "Running 'clandro-core-main-app_runtime-script-tests'"
+
+    (
+        # shellcheck source=app/main/tests/scripts/clandro-core-main-app_runtime-script-tests.in
+        clandro_core__tests__source_file_from_path \
+            "$CLANDRO_CORE__TESTS__TESTS_PATH/app/main/scripts/clandro-core-main-app_runtime-script-tests" || exit $?
+
+        clandro_core_main_app__runtime_script_tests__main
+    )
+    return_value=$?
+    if [ $return_value -ne 0 ]; then
+        clandro_core__tests__log_error "'clandro-core-main-app_runtime-script-tests' failed"
+        return $return_value
+    fi
+
+    clandro_core__tests__log 2 "'clandro-core-main-app_runtime-script-tests' completed in \
+$(clandro_core__tests__print_elapsed_time "$tests_start_time")"
+
+    return 0
+
+}

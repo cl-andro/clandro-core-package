@@ -1,0 +1,1701 @@
+#!@CLANDRO__PREFIX@/bin/bash
+# shellcheck shell=bash
+
+##
+# `clandro_core__clandro_scoped_env_variable__run_tests`
+##
+clandro_core__clandro_scoped_env_variable__run_tests() {
+
+    clandro_core__tests__log 3 "clandro_core__clandro_scoped_env_variable__run_tests()"
+
+    clandro_core__sh__clandro_scoped_env_variable__run_tests || return $?
+    clandro_core__bash__clandro_scoped_env_variable__run_tests || return $?
+
+    return 0
+}
+
+
+
+
+
+clandro_core__sh__clandro_scoped_env_variable__run_tests() {
+
+    clandro_core__tests__log 3 "clandro_core__sh__clandro_scoped_env_variable()"
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME="clandro_core__sh__clandro_scoped_env_variable__run_test"
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__default || return $?
+    clandro_core__sh__clandro_scoped_env_variable__run_tests_for_scope || return $?
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__foo || return $?
+    clandro_core__sh__clandro_scoped_env_variable__run_tests_for_scope || return $?
+
+    return 0
+
+}
+
+clandro_core__sh__clandro_scoped_env_variable__run_tests_for_scope() {
+
+    local test_type
+    local clandro_core__tsev__scope_args
+
+    CLANDRO_ENV__S_ROOT="$CLANDRO_CORE__TESTS__CLANDRO_ENV__S_ROOT"
+
+
+    clandro_core__clandro_scoped_env_variable__test__usage "usage" \
+        "_" "STRING" || return $?
+
+    clandro_core__sh__clandro_scoped_env_variable__test__usage "extended-usage" \
+        "_" "STRING" || return $?
+
+
+    local -A test_types=()
+    test_types["scope-s"]='s="'"${CLANDRO_ENV__S_ROOT}_"'"'
+    test_types["scope-ss"]='ss="'_'"'
+    test_types["component-name"]='cn="clandro"'
+    for test_type in "${!test_types[@]}"; do
+        clandro_core__tsev__scope_args="${test_types["$test_type"]}"
+
+        # `CLANDRO__STRING_DEFINED`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_string_defined "clandro-string-defined_${test_type}" \
+            "_" "STRING_DEFINED" \
+            "$clandro_core__tsev__scope_args"' "STRING_DEFINED"' '"*"' || return $?
+
+
+
+        # `CLANDRO__STRING_SET`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_string_set "clandro-string-set_${test_type}" \
+            "_" "STRING_SET" \
+            "$clandro_core__tsev__scope_args"' "STRING_SET"' '"?"' || return $?
+
+
+
+        # `CLANDRO__PACKAGE_NAME`.
+        clandro_core__clandro_scoped_env_variable__test__clandro__package_name "clandro-package-name_${test_type}_regex" \
+            "_" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'p-="*[!a-zA-Z0-9_.]*"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "false" "" || return $?
+
+        CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+        # shellcheck disable=SC2016
+        clandro_core__clandro_scoped_env_variable__test__clandro__package_name "clandro-package-name_${test_type}_command" \
+            "_" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'c+="is_valid_android_app_package_name"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "true" 'is_valid_android_app_package_name() { printf "%s\n" "${1:-}" | grep -qE '\''^(()|([a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+))$'\'' && [ "${#1}" -le 255 ]; }' || return $?
+        unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+
+
+        # `CLANDRO__ROOTFS`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-rootfs_${test_type}" \
+            "_" "ROOTFS" \
+            "$clandro_core__tsev__scope_args"' "ROOTFS"' 'p+="/|/*[!/]"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__ROOTFS" || return $?
+
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-rootfs-as-android-rootfs_${test_type}" \
+            "_" "ROOTFS" \
+            "$clandro_core__tsev__scope_args"' "ROOTFS"' 'p+="/|/*[!/]"' \
+            "/" || return $?
+
+
+        # `CLANDRO__HOME`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-home_${test_type}" \
+            "_" "HOME" \
+            "$clandro_core__tsev__scope_args"' "HOME"' 'p+="/*[!/]"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__HOME" || return $?
+
+
+        # `CLANDRO__PREFIX`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-prefix_${test_type}" \
+            "_" "PREFIX" \
+            "$clandro_core__tsev__scope_args"' "PREFIX"' 'p+="/*[!/]"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PREFIX" || return $?
+
+
+
+        # `CLANDRO__USER_ID`.
+        clandro_core__clandro_scoped_env_variable__test__clandro__user_id "clandro-user-id_${test_type}" \
+            "_" "USER_ID" \
+            "$clandro_core__tsev__scope_args"' "USER_ID"' 'p-="'\'\''|*[!0-9]*|0[0-9]*|????*"' || return $?
+    done
+
+    local -A test_types=()
+    test_types["scope-s"]='s="'"${CLANDRO_ENV__S_ROOT}APP__"'"'
+    test_types["scope-ss"]='ss="'APP__'"'
+    test_types["component-name"]='cn="clandro-app"'
+    for test_type in "${!test_types[@]}"; do
+        clandro_core__tsev__scope_args="${test_types["$test_type"]}"
+
+        # `CLANDRO_APP__PACKAGE_NAME`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_app__package_name "clandro-app-package-name_${test_type}_regex" \
+            "APP__" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'p-="'\'\''|*[!a-zA-Z0-9_.]*"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "false" "" || return $?
+
+        CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+        # shellcheck disable=SC2016.
+        clandro_core__clandro_scoped_env_variable__test__clandro_app__package_name "clandro-app-package-name_${test_type}_command" \
+            "APP__" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'c+="is_valid_android_app_package_name"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "true" 'is_valid_android_app_package_name() { printf "%s\n" "${1:-}" | grep -qE '\''^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$'\'' && [ "${#1}" -le 255 ]; }' || return $?
+        unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+        done
+
+
+
+    local -A test_types=()
+    test_types["scope-s"]='s="'"${CLANDRO_ENV__S_ROOT}EXEC__"'"'
+    test_types["scope-ss"]='ss="'EXEC__'"'
+    test_types["component-name"]='cn="clandro-exec"'
+    for test_type in "${!test_types[@]}"; do
+        clandro_core__tsev__scope_args="${test_types["$test_type"]}"
+
+        # `CLANDRO_EXEC__PROC_SELF_EXE`.
+        # We cannot use `PROC_SELF_EXE` itself as `libclandro-exec` may modify/unset.
+        clandro_core__clandro_scoped_env_variable__test__clandro_exec__proc_self_exe "clandro-exec-proc-self-exe_${test_type}" \
+            "EXEC__" "PROC_SELF_EXE_TEST" \
+            "$clandro_core__tsev__scope_args"' "PROC_SELF_EXE_TEST"' 'p+="'\'\''|/*[!/]"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PREFIX/bin/foo" || return $?
+
+    done
+
+    return 0
+
+}
+
+
+
+clandro_core__sh__clandro_scoped_env_variable__test__usage() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 3 clandro_core__sh__clandro_scoped_env_variable__test__usage "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+
+    local env_command
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-positive_env-valid" \
+        "${env_command}" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p+='foo|bar'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-positive_env-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p+='foo|bar'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-positive_env-invalid_def-valid" \
+        "${env_command}" \
+        0 "^bar$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p+='foo|bar' bar" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-positive_env-invalid_def-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p+='foo|bar' qux" || return $?
+
+
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-negative_env-valid" \
+        "${env_command}" \
+        0 "^baz$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p-='foo|bar'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-negative_env-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p-='foo|bar'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-negative_env-invalid_def-valid" \
+        "${env_command}" \
+        0 "^baz$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p-='foo|bar' baz" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_pattern-match-negative_env-invalid_def-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' p-='foo|bar' bar" || return $?
+
+    return 0
+
+}
+
+
+
+clandro_core__sh__clandro_scoped_env_variable__run_test() {
+
+    clandro_core__tests__validate_argument_count ge $# 5 clandro_core__sh__clandro_scoped_env_variable__run_test "$@" || return $?
+
+    local test_name="$1"
+    local pre_test_commands="$2"
+    local expected_exit_code="$3"
+    local expected_output_regex="$4"
+    local clandro_core__sh__tsev_command_type="$5"
+
+    local clandro_core__sh__tsev_call_command
+    local clandro_core__sh__tsev_source_command
+    local clandro_core__sh__tsev_source_output_mode_arg=""
+    local clandro_core__sh__tsev_source_print_command=""
+
+    if [[ "$clandro_core__sh__tsev_command_type" == "get-name" ]] || \
+        [[ "$clandro_core__sh__tsev_command_type" == "get-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 7 \
+            "'clandro_core__sh__clandro_scoped_env_variable__run_test' for the '$clandro_core__sh__tsev_command_type' command" "$@" || return $?
+
+        local clandro_core__sh__tsev_source_output_mode="$6"
+        local clandro_core__sh__tsev_args="$7"
+
+        if [[ "$clandro_core__sh__tsev_source_output_mode" == "_" ]]; then
+            clandro_core__sh__tsev_source_output_mode="output_variable"
+        fi
+
+        clandro_core__sh__tsev_source_output_mode_arg=" '$clandro_core__sh__tsev_source_output_mode'"
+
+        if [[ "$clandro_core__sh__tsev_source_output_mode" != "-" ]] && \
+                [[ "$clandro_core__sh__tsev_source_output_mode" != ">" ]]; then
+            clandro_core__sh__tsev_source_print_command="${NL}printf '%s' \"\${$clandro_core__sh__tsev_source_output_mode:-}\""
+        fi
+    elif [[ "$clandro_core__sh__tsev_command_type" == "set-value" ]] || \
+            [[ "$clandro_core__sh__tsev_command_type" == "unset-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 7 \
+            "'clandro_core__sh__clandro_scoped_env_variable__run_test' for the '$clandro_core__sh__tsev_command_type' command" "$@" || return $?
+
+        local clandro_core__sh__tsev_source_print_var="$6"
+        local clandro_core__sh__tsev_args="$7"
+
+        if [[ "$clandro_core__sh__tsev_source_print_var" != "-" ]]; then
+            clandro_core__sh__tsev_source_print_command="${NL}printf '%s' \"\${$clandro_core__sh__tsev_source_print_var:-}\""
+        fi
+    else
+        local clandro_core__sh__tsev_args=""
+    fi
+
+
+    pre_test_commands="export CLANDRO_ENV__S_ROOT='${CLANDRO_ENV__S_ROOT//\'/\'\\\'\'}'${NL}${NL}${pre_test_commands:+"$pre_test_commands${NL}${NL}"}"
+
+    # shellcheck disable=SC2016
+    clandro_core__sh__tsev_source_command='source_file_from_path() { local source_file="${1:-}"; [ $# -gt 0 ] && shift 1; local source_path; if source_path="$(command -v "$source_file")" && [ -n "$source_path" ]; then . "$source_path" || return $?; else echo "Failed to find the '\''$source_file'\'' file to source." 1>&2; return 1; fi; }'"${NL}${NL}"'
+source_file_from_path "clandro-scoped-env-variable.sh" --sourcing-script || exit $?'
+
+    if [[ "$clandro_core__sh__tsev_command_type" == "get-name" ]] || \
+        [[ "$clandro_core__sh__tsev_command_type" == "get-value" ]]; then
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST:-}" != "true" ]]; then
+            clandro_core__sh__tsev_call_command="clandro-scoped-env-variable.sh"
+            clandro_core__tests__run_script_test "clandro_core__sh__tsev__${test_name}__exec-stdout" \
+                "#!/bin/sh${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__sh__tsev_call_command '$clandro_core__sh__tsev_command_type' '>' $clandro_core__sh__tsev_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST:-}" != "true" ]]; then
+            clandro_core__sh__tsev_call_command="${clandro_core__sh__tsev_source_command}${NL}${NL}clandro_core__sh__clandro_scoped_env_variable"
+            clandro_core__tests__run_script_test "clandro_core__sh__tsev__${test_name}__source-stdout" \
+                "#!/bin/sh${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__sh__tsev_call_command '$clandro_core__sh__tsev_command_type' '>' $clandro_core__sh__tsev_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+    fi
+
+    if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST:-}" != "true" ]]; then
+        clandro_core__sh__tsev_call_command="${clandro_core__sh__tsev_source_command}${NL}${NL}clandro_core__sh__clandro_scoped_env_variable"
+        clandro_core__tests__run_script_test "clandro_core__sh__tsev__${test_name}__source-var" \
+            "#!/bin/sh${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__sh__tsev_call_command '$clandro_core__sh__tsev_command_type'$clandro_core__sh__tsev_source_output_mode_arg $clandro_core__sh__tsev_args || exit \$?$clandro_core__sh__tsev_source_print_command" \
+            "$expected_exit_code" "$expected_output_regex" || return $?
+    fi
+
+    return 0
+
+}
+
+
+
+
+
+clandro_core__bash__clandro_scoped_env_variable__run_tests() {
+
+    clandro_core__tests__log 3 "clandro_core__bash__clandro_scoped_env_variable()"
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME="clandro_core__bash__clandro_scoped_env_variable__run_test"
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__default || return $?
+    clandro_core__bash__clandro_scoped_env_variable__run_tests_for_scope || return $?
+
+    clandro_core__set_clandro_core_test_scoped_env_variables__foo || return $?
+    clandro_core__bash__clandro_scoped_env_variable__run_tests_for_scope || return $?
+
+    return 0
+
+}
+
+clandro_core__bash__clandro_scoped_env_variable__run_tests_for_scope() {
+
+    local test_type
+    local clandro_core__tsev__scope_args
+
+    CLANDRO_ENV__S_ROOT="$CLANDRO_CORE__TESTS__CLANDRO_ENV__S_ROOT"
+
+
+    # Basic usage and errors.
+    clandro_core__clandro_scoped_env_variable__test__usage "usage" \
+        "_" "STRING" || return $?
+
+    clandro_core__bash__clandro_scoped_env_variable__test__usage "extended-usage" \
+        "_" "STRING" || return $?
+
+
+
+    local -A test_types=()
+    test_types["scope-s"]='s="'"${CLANDRO_ENV__S_ROOT}_"'"'
+    test_types["scope-ss"]='ss="'_'"'
+    test_types["component-name"]='cn="clandro"'
+    for test_type in "${!test_types[@]}"; do
+        clandro_core__tsev__scope_args="${test_types["$test_type"]}"
+
+        # `CLANDRO__STRING_DEFINED`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_string_defined "clandro-string-defined_${test_type}" \
+            "_" "STRING_DEFINED" \
+            "$clandro_core__tsev__scope_args"' "STRING_DEFINED"' '"*"' || return $?
+
+
+
+        # `CLANDRO__STRING_SET`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_string_set "clandro-string-set_${test_type}" \
+            "_" "STRING_SET" \
+            "$clandro_core__tsev__scope_args"' "STRING_SET"' '"?"' || return $?
+
+
+
+        # `CLANDRO__PACKAGE_NAME`.
+        clandro_core__clandro_scoped_env_variable__test__clandro__package_name "clandro-package-name_${test_type}_regex" \
+            "_" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'r+="^(()|([a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+))$"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "false" "" || return $?
+
+        CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+        # shellcheck disable=SC2016
+        clandro_core__clandro_scoped_env_variable__test__clandro__package_name "clandro-package-name_${test_type}_command" \
+            "_" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'c+="is_valid_android_app_package_name"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "true" 'is_valid_android_app_package_name() { printf "%s\n" "${1:-}" | grep -qE '\''^(()|([a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+))$'\'' && [ "${#1}" -le 255 ]; }' || return $?
+        unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+
+
+        # `CLANDRO__ROOTFS`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-rootfs_${test_type}" \
+            "_" "ROOTFS" \
+            "$clandro_core__tsev__scope_args"' "ROOTFS"' 'r+="^((/)|((/[^/]+)+))$"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__ROOTFS" || return $?
+
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-rootfs-as-android-rootfs_${test_type}" \
+            "_" "ROOTFS" \
+            "$clandro_core__tsev__scope_args"' "ROOTFS"' 'r+="^((/)|((/[^/]+)+))$"' \
+            "/" || return $?
+
+
+        # `CLANDRO__HOME`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-home_${test_type}" \
+            "_" "HOME" \
+            "$clandro_core__tsev__scope_args"' "HOME"' 'r+="^(/[^/]+)+$"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__HOME" || return $?
+
+
+        # `CLANDRO__PREFIX`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_path "clandro-prefix_${test_type}" \
+            "_" "PREFIX" \
+            "$clandro_core__tsev__scope_args"' "PREFIX"' 'r+="^(/[^/]+)+$"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PREFIX" || return $?
+
+
+
+        # `CLANDRO__USER_ID`.
+        clandro_core__clandro_scoped_env_variable__test__clandro__user_id "clandro-user-id_${test_type}" \
+            "_" "USER_ID" \
+            "$clandro_core__tsev__scope_args"' "USER_ID"' 'r+="^(([0-9])|([1-9][0-9]{0,2}))$"' || return $?
+    done
+
+
+
+    local -A test_types=()
+    test_types["scope-s"]='s="'"${CLANDRO_ENV__S_ROOT}APP__"'"'
+    test_types["scope-ss"]='ss="'APP__'"'
+    test_types["component-name"]='cn="clandro-app"'
+    for test_type in "${!test_types[@]}"; do
+        clandro_core__tsev__scope_args="${test_types["$test_type"]}"
+
+        # `CLANDRO_APP__PACKAGE_NAME`.
+        clandro_core__clandro_scoped_env_variable__test__clandro_app__package_name "clandro-app-package-name_${test_type}_regex" \
+            "APP__" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'r+="^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "false" "" || return $?
+
+        CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+        # shellcheck disable=SC2016
+        clandro_core__clandro_scoped_env_variable__test__clandro_app__package_name "clandro-app-package-name_${test_type}_command" \
+            "APP__" "PACKAGE_NAME" \
+            "$clandro_core__tsev__scope_args"' "PACKAGE_NAME"' 'c+="is_valid_android_app_package_name"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PACKAGE_NAME" \
+            "true" 'is_valid_android_app_package_name() { printf "%s\n" "${1:-}" | grep -qE '\''^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)+$'\'' && [ "${#1}" -le 255 ]; }' || return $?
+        unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+    done
+
+
+
+    local -A test_types=()
+    test_types["scope-s"]='s="'"${CLANDRO_ENV__S_ROOT}EXEC__"'"'
+    test_types["scope-ss"]='ss="'EXEC__'"'
+    test_types["component-name"]='cn="clandro-exec"'
+    for test_type in "${!test_types[@]}"; do
+        clandro_core__tsev__scope_args="${test_types["$test_type"]}"
+
+        # `CLANDRO_EXEC__PROC_SELF_EXE`.
+        # We cannot use `PROC_SELF_EXE` itself as `libclandro-exec` may modify/unset.
+        clandro_core__clandro_scoped_env_variable__test__clandro_exec__proc_self_exe "clandro-exec-proc-self-exe_${test_type}" \
+            "EXEC__" "PROC_SELF_EXE_TEST" \
+            "$clandro_core__tsev__scope_args"' "PROC_SELF_EXE_TEST"' 'r+="^(()|((/[^/]+)+))$"' \
+            "$CLANDRO_CORE__TESTS__CLANDRO__PREFIX/bin/foo" || return $?
+    done
+
+    return 0
+
+}
+
+
+
+clandro_core__bash__clandro_scoped_env_variable__test__usage() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 3 clandro_core__bash__clandro_scoped_env_variable__test__usage "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+
+    local env_command
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-positive_env-valid" \
+        "${env_command}" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r+='^foo|bar$'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-positive_env-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r+='^foo|bar$'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-positive_env-invalid_def-valid" \
+        "${env_command}" \
+        0 "^bar$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r+='^foo|bar$' bar" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-positive_env-invalid_def-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r+='^foo|bar$' qux" || return $?
+
+
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-negative_env-valid" \
+        "${env_command}" \
+        0 "^baz$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r-='^foo|bar$'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-negative_env-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r-='^foo|bar$'" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-negative_env-invalid_def-valid" \
+        "${env_command}" \
+        0 "^baz$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r-='^foo|bar$' baz" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_regex-match-negative_env-invalid_def-invalid" \
+        "${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' r-='^foo|bar$' bar" || return $?
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-quoted-arg_env-valid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable \"value\"'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-quoted-arg_env-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable \"value\"'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-quoted-arg_env-invalid_def-valid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable \"value\"' foo" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-quoted-arg_env-invalid_def-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable \"value\"' baz" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-arg_quoted-arg-type-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable \"name\"'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    return 0
+
+}
+
+
+
+clandro_core__bash__clandro_scoped_env_variable__run_test() {
+
+    clandro_core__tests__validate_argument_count ge $# 5 clandro_core__bash__clandro_scoped_env_variable__run_test "$@" || return $?
+
+    local test_name="$1"
+    local pre_test_commands="$2"
+    local expected_exit_code="$3"
+    local expected_output_regex="$4"
+    local clandro_core__bash__tsev_command_type="$5"
+
+    local clandro_core__bash__tsev_call_command
+    local clandro_core__bash__tsev_source_command
+    local clandro_core__bash__tsev_source_output_mode_arg=""
+    local clandro_core__bash__tsev_source_print_command=""
+
+    if [[ "$clandro_core__bash__tsev_command_type" == "get-name" ]] || \
+        [[ "$clandro_core__bash__tsev_command_type" == "get-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 7 \
+            "'clandro_core__bash__clandro_scoped_env_variable__run_test' for the '$clandro_core__bash__tsev_command_type' command" "$@" || return $?
+
+        local clandro_core__bash__tsev_source_output_mode="$6"
+        local clandro_core__bash__tsev_args="$7"
+
+        if [[ "$clandro_core__bash__tsev_source_output_mode" == "_" ]]; then
+            clandro_core__bash__tsev_source_output_mode="output_variable"
+        fi
+
+        clandro_core__bash__tsev_source_output_mode_arg=" '$clandro_core__bash__tsev_source_output_mode'"
+
+        if [[ "$clandro_core__bash__tsev_source_output_mode" != "-" ]] && \
+                [[ "$clandro_core__bash__tsev_source_output_mode" != ">" ]]; then
+            clandro_core__bash__tsev_source_print_command="${NL}printf '%s' \"\${$clandro_core__bash__tsev_source_output_mode:-}\""
+        fi
+    elif [[ "$clandro_core__bash__tsev_command_type" == "set-value" ]] || \
+            [[ "$clandro_core__bash__tsev_command_type" == "unset-value" ]]; then
+        clandro_core__tests__validate_argument_count eq $# 7 \
+            "'clandro_core__bash__clandro_scoped_env_variable__run_test' for the '$clandro_core__bash__tsev_command_type' command" "$@" || return $?
+
+        local clandro_core__bash__tsev_source_print_var="$6"
+        local clandro_core__bash__tsev_args="$7"
+
+        if [[ "$clandro_core__bash__tsev_source_print_var" != "-" ]]; then
+            clandro_core__bash__tsev_source_print_command="${NL}printf '%s' \"\${$clandro_core__bash__tsev_source_print_var:-}\""
+        fi
+    else
+        local clandro_core__bash__tsev_args=""
+    fi
+
+
+    pre_test_commands="export CLANDRO_ENV__S_ROOT='${CLANDRO_ENV__S_ROOT//\'/\'\\\'\'}'${NL}${NL}${pre_test_commands:+"$pre_test_commands${NL}${NL}"}"
+
+    # shellcheck disable=SC2016
+    clandro_core__bash__tsev_source_command='source_file_from_path() { local source_file="${1:-}"; [ $# -gt 0 ] && shift 1; local source_path; if source_path="$(command -v "$source_file")" && [ -n "$source_path" ]; then source "$source_path" || return $?; else echo "Failed to find the '\''$source_file'\'' file to source." 1>&2; return 1; fi; }'"${NL}${NL}"'
+source_file_from_path "clandro-scoped-env-variable.bash" || exit $?'
+
+    if [[ "$clandro_core__bash__tsev_command_type" == "get-name" ]] || \
+        [[ "$clandro_core__bash__tsev_command_type" == "get-value" ]]; then
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST:-}" != "true" ]]; then
+            clandro_core__bash__tsev_call_command="clandro-scoped-env-variable.bash"
+            clandro_core__tests__run_script_test "clandro_core__bash__tsev__${test_name}__exec-stdout" \
+                "#!/bin/bash${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__bash__tsev_call_command '$clandro_core__bash__tsev_command_type' '>' $clandro_core__bash__tsev_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+
+        if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST:-}" != "true" ]]; then
+            clandro_core__bash__tsev_call_command="${clandro_core__bash__tsev_source_command}${NL}${NL}clandro_core__bash__clandro_scoped_env_variable"
+            clandro_core__tests__run_script_test "clandro_core__bash__tsev__${test_name}__source-stdout" \
+                "#!/bin/bash${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__bash__tsev_call_command '$clandro_core__bash__tsev_command_type' '>' $clandro_core__bash__tsev_args" \
+                "$expected_exit_code" "$expected_output_regex" || return $?
+        fi
+    fi
+
+    if [[ "${CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_VAR_TEST:-}" != "true" ]]; then
+        clandro_core__bash__tsev_call_command="${clandro_core__bash__tsev_source_command}${NL}${NL}clandro_core__bash__clandro_scoped_env_variable"
+        clandro_core__tests__run_script_test "clandro_core__bash__tsev__${test_name}__source-var" \
+            "#!/bin/bash${NL}${NL}set -e -u${NL}${NL}${pre_test_commands}$clandro_core__bash__tsev_call_command '$clandro_core__bash__tsev_command_type'$clandro_core__bash__tsev_source_output_mode_arg $clandro_core__bash__tsev_args || exit \$?$clandro_core__bash__tsev_source_print_command" \
+            "$expected_exit_code" "$expected_output_regex" || return $?
+    fi
+
+    return 0
+
+}
+
+
+
+
+
+clandro_core__clandro_scoped_env_variable__test__usage() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 3 clandro_core__clandro_scoped_env_variable__test__usage "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+
+    local env_command
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_command_unset" \
+        "" \
+        64 "^The command '' passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        "" - "" || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_command_invalid" \
+        "" \
+        64 "^The command 'get-value1' passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-value1 - "" || return $?
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_command_args_invalid-1" \
+        "" \
+        64 "^Invalid argument count 1 for the 'get-name' command\. The \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' function expects 3 arguments\..*$" \
+        get-name - "" || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_command_args_invalid-less" \
+        "" \
+        64 "^Invalid argument count 2 for the 'get-name' command\. The \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' function expects 3 arguments\..*$" \
+        get-name - '2' || return $?
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_command_args_invalid-1" \
+        "" \
+        64 "^Invalid argument count 1 for the 'get-value' command\. The \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' function expects minimum 4 arguments\..*$" \
+        get-value - "" || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_command_args_invalid-less" \
+        "" \
+        64 "^Invalid argument count 3 for the 'get-value' command\. The \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' function expects minimum 4 arguments\..*$" \
+        get-value - '2 3' || return $?
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_command_args_invalid-1" \
+        "" \
+        64 "^Invalid argument count 1 for the 'set-value' command\. The \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' function expects 3 arguments\..*$" \
+        set-value - "1" || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_command_args_invalid-less" \
+        "" \
+        64 "^Invalid argument count 2 for the 'set-value' command\. The \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' function expects 3 arguments\..*$" \
+        set-value - '1 2' || return $?
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_command_args_invalid-less" \
+        "" \
+        64 "^Invalid argument count 1 for the 'unset-value' command\. The \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' function expects 2 arguments\..*$" \
+        unset-value - "1" || return $?
+
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_none" \
+        "" \
+        64 "^The output_mode '' argument passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name, or equal to \`>\` or \`-\`\..*$" \
+        get-value "" 'ss="_" "TEST" "*"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_invalid" \
+        "" \
+        64 "^The output_mode '1foo' argument passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name, or equal to \`>\` or \`-\`\..*$" \
+        get-value "1foo" 'ss="_" "TEST" "*"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_var-to-set_output-mode-stdout_value-valid" \
+        "" \
+        0 "^${CLANDRO_ENV__S_ROOT}_TEST$" \
+        get-name ">" 'ss="_" "TEST"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "_" "TEST" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_output-mode-stdout_value-valid" \
+        "$env_command" \
+        0 "^foo$" \
+        get-value ">" 'ss="_" "TEST" "*"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_var-to-set_output-mode-dash_value-valid" \
+        "" \
+        0 "^$" \
+        get-name "-" 'ss="_" "TEST"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "_" "TEST" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_output-mode-dash_value-valid" \
+        "$env_command" \
+        0 "^$" \
+        get-value "-" 'ss="_" "TEST" "*"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "_" "TEST" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_var-to-set_var-already-set_value-set" \
+        "$env_command" \
+        0 "^${CLANDRO_ENV__S_ROOT}_TEST$" \
+        get-name "${CLANDRO_ENV__S_ROOT}_TEST" 'ss="_" "TEST"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "_" "TEST" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_var-to-set_var-already-set_value-unset" \
+        "$env_command" \
+        0 "^${CLANDRO_ENV__S_ROOT}_TEST$" \
+        get-name "${CLANDRO_ENV__S_ROOT}_TEST" 'ss="_" "TEST"' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "_" "TEST" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_var-already-set_value-set" \
+        "$env_command${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"foo\" ]; }" \
+        0 "^foo$" \
+        get-value "${CLANDRO_ENV__S_ROOT}_TEST" 'ss="_" "TEST" c+="is_valid_scoped_variable" foo' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true" CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "_" "TEST" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_var-to-set_var-already-set_value-unset" \
+        "$env_command${NL}${NL}is_valid_scoped_variable() { [ -z \"\$1\" ] || [ \"\$1\" = \"foo\" ]; }" \
+        0 "^$" \
+        get-value "${CLANDRO_ENV__S_ROOT}_TEST" 'ss="_" "TEST" c+="is_valid_scoped_variable" ""' || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_SOURCE_STDOUT_TEST
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_scope_invalid-with-no-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-name _ 't= "TEST"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_scope_invalid-with-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=_' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-name _ 't="_" "TEST"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_scope_none" \
+        "" \
+        64 "^The scoped_var_scope_mode argument for the variable to get passed for the 'get-name' command to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not set\..*$" \
+        get-name _ '"" "TEST"' || return $?
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope_none-with-no-def" \
+        "" \
+        81 "^Failed to find a valid value.*$" \
+        get-value _ '"" "TEST" "?"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope_none-with-def" \
+        "" \
+        0 "^foo$" \
+        get-value _ '"" "TEST" "?" "foo"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope_invalid-with-no-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-value _ 't= "TEST" "*"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope_invalid-with-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=_' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-value _ 't="_" "TEST" "*"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_component-name_invalid-with-no-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 'cn=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-value _ 'cn= "TEST" "*"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_component-name_unsupported-app" \
+        "" \
+        64 "^The scoped_var_scope_mode 'cn=bar-app' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-value _ 'cn="bar-app" "TEST" "*"' || return $?
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_scope_invalid-with-no-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=' argument for the variable to set passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        set-value - 't= "TEST" "foo"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_scope_invalid-with-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=_' argument for the variable to set passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        set-value - 't="_" "TEST" "foo"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_scope_none" \
+        "" \
+        64 "^The scoped_var_scope_mode argument for the variable to set passed for the 'set-value' command to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not set\..*$" \
+        set-value - '"" "TEST" "foo"' || return $?
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_scope_invalid-with-no-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=' argument for the variable to unset passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        unset-value - 't= "TEST"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_scope_invalid-with-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 't=_' argument for the variable to unset passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        unset-value - 't="_" "TEST"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_scope_none" \
+        "" \
+        64 "^The scoped_var_scope_mode argument for the variable to unset passed for the 'unset-value' command to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not set\..*$" \
+        unset-value - '"" "TEST"' || return $?
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_no-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 's=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-value _ 's="" "TEST" "*"' || return $?
+
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "1" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_var-root-scope-invalid" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ 's="_" "TEST" "*"' || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_var-sub-scope-invalid" \
+        "$env_command" \
+        64 "^The name of the variable to get '#TEST' generated in \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value _ 's="#" "TEST" "*"' || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_var-sub-name-invalid" \
+        "$env_command" \
+        64 "^The name of the variable to get '_#TEST' generated in \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value _ 's="_" "#TEST" "*"' || return $?
+
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    append_export_scoped_variable_command env_command "BAR_" "_" "VAR" "bar" || return $?
+    append_export_scoped_variable_command env_command "BAZ_" "_" "VAR" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-s_custom-set" \
+        "$env_command" \
+        0 "^baz$" \
+        get-value _ 's="BAZ__" "VAR" "*"' || return $?
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_no-arg" \
+        "" \
+        64 "^The scoped_var_scope_mode 'ss=' argument for the variable to get passed to \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not valid\..*$" \
+        get-value _ 'ss="" "TEST" "*"' || return $?
+
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "1" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_var-root-scope-invalid" \
+        "$env_command" \
+        1 "^The CLANDRO_ENV__S_ROOT environment variable value '1' while running \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value _ 'ss="_" "TEST" "*"' || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_var-sub-scope-invalid" \
+        "$env_command" \
+        64 "^The name of the variable to get 'BAR_#TEST' generated in \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value _ 'ss="#" "TEST" "*"' || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_var-sub-name-invalid" \
+        "$env_command" \
+        64 "^The name of the variable to get 'BAR__#TEST' generated in \
+'clandro_core__([a-z_]+)__clandro_scoped_env_variable' is not a valid environment variable name\..*$" \
+        get-value _ 'ss="_" "#TEST" "*"' || return $?
+
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    append_export_scoped_variable_command env_command "BAR_" "_" "VAR" "bar" || return $?
+    append_export_scoped_variable_command env_command "BAZ_" "_" "VAR" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_custom-set" \
+        "$env_command" \
+        0 "^bar$" \
+        get-value _ 'ss="_" "VAR" "*"' || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    append_export_scoped_variable_command env_command "BAR_" "_" "VAR" "bar" || return $?
+    append_export_scoped_variable_command env_command "BAZ_" "_" "VAR" "baz" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_scope-ss_custom-unset" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ 'ss="FOO_SUB__" "VAR" "*"' || return $?
+
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_invalid-with-no-arg" \
+        "" \
+        64 "^The validator command 'unknown_func' \
+not found while running 'clandro_core__([a-z_]+)__clandro_scoped_env_variable' \
+that is set in the ([a-z_]+)_validator 'c\+=unknown_func' argument\..*$" \
+        get-value _ 'ss="'"$var_sub_scope_name"'" "TEST" c+="unknown_func"' || return $?
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_invalid-with-arg" \
+        "" \
+        64 "^The validator command 'unknown_func' \
+not found while running 'clandro_core__([a-z_]+)__clandro_scoped_env_variable' \
+that is set in the ([a-z_]+)_validator 'c\+=unknown_func arg1' argument\..*$" \
+        get-value _ 'ss="'"$var_sub_scope_name"'" "TEST" c+="unknown_func arg1"' || return $?
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_no-command-arg_env-valid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"foo\" ]; }" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_no-command-arg_env-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_no-command-arg_env-invalid_def-valid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"foo\" ]; }" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable' foo" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_no-command-arg_env-invalid_def-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable' baz" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-arg_env-valid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable value'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-arg_env-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable value'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-arg_env-invalid_def-valid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        0 "^foo$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable value' foo" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-arg_env-invalid_def-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable value' baz" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+
+    CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST="true"
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "bar" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_validator-command_with-command-arg_arg-type-invalid" \
+        "${env_command}${NL}${NL}is_valid_scoped_variable() { [ \"\$1\" = \"value\" ] && [ \"\$2\" = \"foo\" ]; }" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "ss='$var_sub_scope_name' '$var_sub_name' c+='is_valid_scoped_variable name'" || return $?
+    unset CLANDRO_CORE__TESTS__TEST_FUNC__SKIP_EXEC_TEST
+
+
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_scope-s_empty" \
+        "$env_command" \
+        0 "^$" \
+        set-value "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}" "s='${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}' '$var_sub_name' ''" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_scope-s_set" \
+        "$env_command" \
+        0 "^foo$" \
+        set-value "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}" "s='${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}' '$var_sub_name' foo" || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    append_unset_scoped_variable_command env_command "BAR_" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_custom-scope-s_set" \
+        "$env_command" \
+        0 "^bar$" \
+        set-value "BAR_${var_sub_scope_name}${var_sub_name}" "s='BAR_${var_sub_scope_name}' '$var_sub_name' bar" || return $?
+
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_scope-ss_empty" \
+        "$env_command" \
+        0 "^$" \
+        set-value "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}" "ss='$var_sub_scope_name' '$var_sub_name' ''" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_scope-ss_set" \
+        "$env_command" \
+        0 "^foo$" \
+        set-value "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}" "ss='$var_sub_scope_name' '$var_sub_name' foo" || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    append_unset_scoped_variable_command env_command "BAR_" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_set-value_custom-scope-ss_set" \
+        "$env_command" \
+        0 "^bar$" \
+        set-value "BAR_${var_sub_scope_name}${var_sub_name}" "ss='${var_sub_scope_name}' '$var_sub_name' bar" || return $?
+
+
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_scope-s_unset" \
+        "$env_command" \
+        0 "^$" \
+        unset-value "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}" "s='${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}' '$var_sub_name'" || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    append_unset_scoped_variable_command env_command "BAR_" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_custom-scope-s_unset" \
+        "$env_command" \
+        0 "^$" \
+        unset-value "BAR_${var_sub_scope_name}${var_sub_name}" "s='BAR_${var_sub_scope_name}' '$var_sub_name'" || return $?
+
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_scope-ss_empty" \
+        "$env_command" \
+        0 "^$" \
+        unset-value "${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}" "ss='$var_sub_scope_name' '$var_sub_name'" || return $?
+
+    get_export_scoped_variable_command env_command "CLANDRO_" "ENV__" "S_ROOT" "BAR_" || return $?
+    append_unset_scoped_variable_command env_command "BAR_" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_unset-value_custom-scope-ss_unset" \
+        "$env_command" \
+        0 "^$" \
+        unset-value "BAR_${var_sub_scope_name}${var_sub_name}" "ss='${var_sub_scope_name}' '$var_sub_name'" || return $?
+
+    return 0
+
+}
+
+
+
+clandro_core__clandro_scoped_env_variable__test__clandro_string_defined() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 5 clandro_core__clandro_scoped_env_variable__test__clandro_string_defined "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+    local clandro_core__tsev__scope_args="$4"
+    local clandro_core__tsev__validator_and_values_args="$5"
+
+    local env_command
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-empty" \
+        "$env_command" \
+        0 "^$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-set" \
+        "$env_command" \
+        0 "^foo$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    return 0
+
+}
+
+clandro_core__clandro_scoped_env_variable__test__clandro_string_set() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 5 clandro_core__clandro_scoped_env_variable__test__clandro_string_set "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+    local clandro_core__tsev__scope_args="$4"
+    local clandro_core__tsev__validator_and_values_args="$5"
+
+    local env_command
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_valid" \
+        "" \
+        0 "^${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}$" \
+        get-name _ "${clandro_core__tsev__scope_args}" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-empty" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-set" \
+        "$env_command" \
+        0 "^foo$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    return 0
+
+}
+
+clandro_core__clandro_scoped_env_variable__test__clandro__package_name() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 8 clandro_core__clandro_scoped_env_variable__test__clandro__package_name "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+    local clandro_core__tsev__scope_args="$4"
+    local clandro_core__tsev__validator_and_values_args="$5"
+    local clandro__package_name="$6"
+    local run_length_tests="$7"
+    local pre_test_commands="$8"
+
+    local env_command
+    local clandro__package_name_escaped
+
+    clandro__package_name_escaped="$(clandro_core__tests__escape_string_for_regex "$clandro__package_name")" || return $?
+    pre_test_commands="${pre_test_commands:+"$pre_test_commands${NL}${NL}"}"
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_valid" \
+        "${pre_test_commands}" \
+        0 "^${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}$" \
+        get-name _ "${clandro_core__tsev__scope_args}" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset" \
+        "${pre_test_commands}${env_command}" \
+        0 "^$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-empty" \
+        "${pre_test_commands}${env_command}" \
+        0 "^$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "$clandro__package_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-chars" \
+        "${pre_test_commands}${env_command}" \
+        0 "^${clandro__package_name_escaped}$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "#$clandro__package_name#" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-chars" \
+        "${pre_test_commands}${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    if [[ "$run_length_tests" == "true" ]]; then
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo.$(printf 'x%.0s' {1..251})" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-length" \
+            "${pre_test_commands}${env_command}" \
+            0 "^foo\.$(printf 'x%.0s' {1..251})$" \
+            get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo.$(printf 'x%.0s' {1..252})" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-length" \
+            "${pre_test_commands}${env_command}" \
+            81 "^Failed to find a valid value .*$" \
+            get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+    fi
+
+    return 0
+
+}
+
+clandro_core__clandro_scoped_env_variable__test__clandro_app__package_name() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 8 clandro_core__clandro_scoped_env_variable__test__clandro_app__package_name "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+    local clandro_core__tsev__scope_args="$4"
+    local clandro_core__tsev__validator_and_values_args="$5"
+    local clandro__package_name="$6"
+    local run_length_tests="$7"
+    local pre_test_commands="$8"
+
+    local env_command
+    local clandro__package_name_escaped
+
+    clandro__package_name_escaped="$(clandro_core__tests__escape_string_for_regex "$clandro__package_name")" || return $?
+    pre_test_commands="${pre_test_commands:+"$pre_test_commands${NL}${NL}"}"
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_valid" \
+        "${pre_test_commands}" \
+        0 "^${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}$" \
+        get-name _ "${clandro_core__tsev__scope_args}" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset" \
+        "${pre_test_commands}${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-empty" \
+        "${pre_test_commands}${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "$clandro__package_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-chars" \
+        "${pre_test_commands}${env_command}" \
+        0 "^${clandro__package_name_escaped}$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" @"CLANDRO_APP__PACKAGE_NAME"@ || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-chars" \
+        "${pre_test_commands}${env_command}" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    if [[ "$run_length_tests" == "true" ]]; then
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo.$(printf 'x%.0s' {1..251})" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-length" \
+            "${pre_test_commands}${env_command}" \
+            0 "^foo\.$(printf 'x%.0s' {1..251})$" \
+            get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+        get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "foo.$(printf 'x%.0s' {1..252})" || return $?
+        "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-length" \
+            "${pre_test_commands}${env_command}" \
+            81 "^Failed to find a valid value .*$" \
+            get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+    fi
+
+    return 0
+
+}
+
+
+
+clandro_core__clandro_scoped_env_variable__test__clandro_path() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 6 clandro_core__clandro_scoped_env_variable__test__clandro_path "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+    local clandro_core__tsev__scope_args="$4"
+    local clandro_core__tsev__validator_and_values_args="$5"
+    local clandro_path="$6"
+
+    local env_command
+    local clandro_path_escaped
+    local clandro_path_prefix
+    local clandro_path_prefix_escaped
+
+    clandro_path_escaped="$(clandro_core__tests__escape_string_for_regex "$clandro_path")" || return $?
+
+    if [[ "$clandro_path" != "/" ]]; then
+        clandro_path_prefix="$clandro_path"
+        clandro_path_prefix_escaped="$(clandro_core__tests__escape_string_for_regex "$clandro_path_prefix")" || return $?
+    else
+        clandro_path_prefix=""
+        clandro_path_prefix_escaped=""
+    fi
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_valid" \
+        "" \
+        0 "^${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}$" \
+        get-name _ "${clandro_core__tsev__scope_args}" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset_def-none" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid_def-none" \
+        "$env_command" \
+        0 "^${clandro_path_escaped}$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" ".$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid_def-none" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset_def-valid" \
+        "$env_command" \
+        0 "^${clandro_path_escaped}$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'"${clandro_path}"'"' || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" ".$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid_def-valid" \
+        "$env_command" \
+        0 "^${clandro_path_prefix_escaped}/def$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'"${clandro_path_prefix}/def"'"' || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" ".$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid_def-invalid" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'".${clandro_path_prefix}/def"'"' || return $?
+
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset_def1-valid_def2-valid" \
+        "$env_command" \
+        0 "^${clandro_path_prefix_escaped}/def1$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'"${clandro_path_prefix}/def1"'" "'"${clandro_path_prefix}/def2"'"' || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid_def1-valid_def2-valid" \
+        "$env_command" \
+        0 "^${clandro_path_escaped}$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'"${clandro_path_prefix}/def1"'" "'"${clandro_path_prefix}/def2"'"' || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" ".$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid_def1-valid_def2-valid" \
+        "$env_command" \
+        0 "^${clandro_path_prefix_escaped}/def1$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'"${clandro_path_prefix}/def1"'" "'"${clandro_path_prefix}/def2"'"' || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" ".$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid_def1-invalid_def2-valid" \
+        "$env_command" \
+        0 "^${clandro_path_prefix_escaped}/def2$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'".${clandro_path_prefix}/def1"'" "'"${clandro_path_prefix}/def2"'"' || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" ".$clandro_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid_def1-invalid_def2-invalid" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}"' "'".${clandro_path_prefix}/def1"'" ".'"${clandro_path_prefix}/def2"'"' || return $?
+
+    return 0
+
+}
+
+
+clandro_core__clandro_scoped_env_variable__test__clandro__user_id() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 5 clandro_core__clandro_scoped_env_variable__test__clandro__user_id "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+    local clandro_core__tsev__scope_args="$4"
+    local clandro_core__tsev__validator_and_values_args="$5"
+
+    local env_command
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_get-name_valid" \
+        "" \
+        0 "^${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}$" \
+        get-name _ "${clandro_core__tsev__scope_args}" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-empty" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "0" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-0" \
+        "$env_command" \
+        0 "^0$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "1" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-1" \
+        "$env_command" \
+        0 "^1$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "9" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-9" \
+        "$env_command" \
+        0 "^9$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "10" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-10" \
+        "$env_command" \
+        0 "^10$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "11" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-11" \
+        "$env_command" \
+        0 "^11$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "99" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-99" \
+        "$env_command" \
+        0 "^99$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "999" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-999" \
+        "$env_command" \
+        0 "^999$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "-0" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid--0" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "01" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-01" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "1000" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-1000" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "10000" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-10000" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "uuu" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-uuu" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset_def1-valid" \
+        "$env_command" \
+        0 "^0$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args} 0" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-empty_def1-valid" \
+        "$env_command" \
+        0 "^0$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args} 0" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "10000" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-10000_def1-valid" \
+        "$env_command" \
+        0 "^0$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args} 0" || return $?
+
+    return 0
+
+}
+
+
+clandro_core__clandro_scoped_env_variable__test__clandro_exec__proc_self_exe() {
+
+    clandro_core__tests__log 4 "${1}()"
+
+    clandro_core__tests__validate_argument_count eq $# 6 clandro_core__clandro_scoped_env_variable__test__clandro_exec__proc_self_exe "$@" || return $?
+
+    local test_label="$1"
+    local var_sub_scope_name="$2"
+    local var_sub_name="$3"
+    local clandro_core__tsev__scope_args="$4"
+    local clandro_core__tsev__validator_and_values_args="$5"
+    local clandro_executable_path="$6"
+
+    local env_command
+    local clandro_executable_path_escaped
+
+    clandro_executable_path_escaped="$(clandro_core__tests__escape_string_for_regex "$clandro_executable_path")" || return $?
+
+
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-name_valid" \
+        "" \
+        0 "^${CLANDRO_ENV__S_ROOT}${var_sub_scope_name}${var_sub_name}$" \
+        get-name _ "${clandro_core__tsev__scope_args}" || return $?
+
+    get_unset_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-unset" \
+        "$env_command" \
+        0 "^$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-empty" \
+        "$env_command" \
+        0 "^$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "$clandro_executable_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-executable-path" \
+        "$env_command" \
+        0 "^${clandro_executable_path_escaped}$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" ".$clandro_executable_path" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-executable-path" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "/" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-android-rootfs" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "//" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-invalid-android-rootfs-duplicate-path-sep" \
+        "$env_command" \
+        81 "^Failed to find a valid value .*$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    get_export_scoped_variable_command env_command "$CLANDRO_ENV__S_ROOT" "$var_sub_scope_name" "$var_sub_name" "/foo" || return $?
+    "$CLANDRO_CORE__TESTS__TEST_FUNC__FUNC_NAME" "${test_label}_get-value_env-valid-android-rootfs-subpath" \
+        "$env_command" \
+        0 "^/foo$" \
+        get-value _ "${clandro_core__tsev__scope_args} ${clandro_core__tsev__validator_and_values_args}" || return $?
+
+    return 0
+
+}
